@@ -3,12 +3,19 @@ import React, {
   createContext,
   useContext,
   useEffect,
-  useReducer,
-  useRef
+  useReducer
 } from 'react';
 
-import { auth, ENABLE_AUTH } from '../../lib/auth';
-import { AUTH_ACTION_TYPE, User } from '../actions';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithPopup
+} from 'firebase/auth';
+import Router from 'next/router';
+
+import { app } from '../../lib/firebase';
+import { AUTH_ACTION_TYPE } from '../actions';
 import {
   authInitialState,
   AuthInitialState,
@@ -16,12 +23,12 @@ import {
 } from '../reducers';
 
 interface AuthContextType extends AuthInitialState {
-  signIn: (user: User) => void;
-  signOut: () => void;
+  signIn: () => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
+export const AuthConsumer = AuthContext.Consumer;
 export const useAuthContext = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) throw new Error('useAuthContext must be used within a AuthProvider');
@@ -29,73 +36,88 @@ export const useAuthContext = (): AuthContextType => {
   return context;
 };
 
-export const AuthConsumer = AuthContext.Consumer;
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => {
   const [state, dispatch] = useReducer(authReducer, authInitialState);
-  const initialized = useRef(false);
 
-  const initialize = async () => {
-    if (initialized.current) return;
+  const setLoading = (loading = true) =>
+    dispatch({
+      type: AUTH_ACTION_TYPE.LOADING,
+      payload: loading,
+    });
 
-    initialized.current = true;
-
-    /**
-     * Check if auth has been skipped
-     * From sign-in page we may have set "skip-auth" to "true"
-     */
-    const authSkipped = globalThis.sessionStorage.getItem('skip-auth') === 'true';
-    if (authSkipped)
-      return dispatch({
-        type: AUTH_ACTION_TYPE.INITIALIZE,
-        payload: {},
-      });
-
-    /**
-     * Check if authentication with Zalter is enabled
-     * If not, then set user as authenticated
-     */
-    if (!ENABLE_AUTH)
-      return dispatch({
-        type: AUTH_ACTION_TYPE.INITIALIZE,
-        payload: {},
-      });
-
+  const signIn = async () => {
     try {
-      if (!auth) return console.error('Auth undefined');
-      // Check if user is authenticated
-      const isAuthenticated = await auth.isAuthenticated();
-
-      if (isAuthenticated)
-        return dispatch({
-          type: AUTH_ACTION_TYPE.INITIALIZE,
-          payload: {},
-        });
-
+      setLoading();
+      const result = await signInWithPopup(auth, provider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const { accessToken } = credential;
+      const { user } = result;
       dispatch({
-        type: AUTH_ACTION_TYPE.INITIALIZE,
+        type: AUTH_ACTION_TYPE.SIGN_IN,
+        payload: {
+          ...user,
+          accessToken,
+        },
       });
+      Router.push('/');
     } catch (error) {
-      console.error(error);
-      dispatch({
-        type: AUTH_ACTION_TYPE.INITIALIZE,
-      });
+      setLoading(false);
+      const {
+        code: errorCode,
+        message: errorMessage,
+        customData: { email },
+      } = error;
+      const credential = GoogleAuthProvider.credentialFromError(error);
+      console.error(errorCode, errorMessage, email, credential);
     }
   };
 
-  const signIn = (user: User) =>
-    dispatch({
-      type: AUTH_ACTION_TYPE.INITIALIZE,
-      payload: user,
-    });
-
-  const signOut = () =>
-    dispatch({
-      type: AUTH_ACTION_TYPE.SIGN_OUT,
-    });
+  const signOut = async () => {
+    setLoading();
+    try {
+      await auth.signOut();
+      dispatch({
+        type: AUTH_ACTION_TYPE.SIGN_OUT,
+      });
+      Router.push('/login');
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    initialize().catch(console.error);
+    onAuthStateChanged(auth, async (user) => {
+      try {
+        if (user) {
+          setLoading();
+          // TODO:
+          /**
+           * 1. Fetch User from database
+           * 2. if user, dispatch it
+           * 3. if no user, redirect to create form
+           *    and then dispatch
+           */
+
+          const accessToken = await user.getIdToken();
+          dispatch({
+            type: AUTH_ACTION_TYPE.SIGN_IN,
+            payload: {
+              ...user,
+              accessToken,
+            },
+          });
+        } else {
+          Router.push('/login');
+        }
+      } catch (error) {
+        setLoading(false);
+        console.error(error);
+      }
+    });
   }, []);
 
   return (

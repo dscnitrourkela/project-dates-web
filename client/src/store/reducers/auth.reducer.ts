@@ -1,4 +1,7 @@
-import { AUTH_ACTION_TYPE, AuthActionType } from '../actions';
+import {
+  AUTH_ACTION_TYPE,
+  AuthActionType
+} from '../actions';
 
 export const authInitialState = {
   isAuthenticated: false,
@@ -10,24 +13,17 @@ export type AuthInitialState = typeof authInitialState;
 
 export const authReducer = (state: AuthInitialState, action: AuthActionType): AuthInitialState => {
   switch (action.type) {
-    case AUTH_ACTION_TYPE.INITIALIZE:
+    case AUTH_ACTION_TYPE.LOADING:
       return {
         ...state,
-        ...(action.payload
-          ? {
-              isAuthenticated: true,
-              isLoading: false,
-              user: action.payload,
-            }
-          : {
-              isLoading: false,
-            }),
+        isLoading: action.payload,
       };
 
     case AUTH_ACTION_TYPE.SIGN_IN:
       return {
         ...state,
         isAuthenticated: true,
+        isLoading: false,
         user: action.payload,
       };
 
@@ -35,6 +31,7 @@ export const authReducer = (state: AuthInitialState, action: AuthActionType): Au
       return {
         ...state,
         isAuthenticated: false,
+        isLoading: false,
         user: null,
       };
 

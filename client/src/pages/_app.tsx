@@ -38,11 +38,7 @@ const App: React.FC<IAppProps> = (props) => {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <AuthProvider>
-            <AuthConsumer>
-              {(auth) => (auth.isLoading ? <Fragment /> : getLayout(<Component {...pageProps} />))}
-            </AuthConsumer>
-          </AuthProvider>
+          <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>
         </ThemeProvider>
       </LocalizationProvider>
     </CacheProvider>

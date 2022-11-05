@@ -1,9 +1,15 @@
 /* eslint-disable no-console */
 import React, { useContext } from 'react';
 
-import { Box, MenuItem, MenuList, Popover, PopoverProps, Typography } from '@mui/material';
+import {
+  Box,
+  MenuItem,
+  MenuList,
+  Popover,
+  PopoverProps,
+  Typography
+} from '@mui/material';
 
-import { auth, ENABLE_AUTH } from 'lib/auth';
 import Router from 'next/router';
 import { AuthContext } from 'store/contexts';
 
@@ -18,42 +24,14 @@ export const AccountPopover: React.FC<IAccountPopover> = ({
   open,
   ...other
 }) => {
-  const authContext = useContext(AuthContext);
+  const { signOut } = useContext(AuthContext);
 
   const handleSignOut = async () => {
-    onClose?.();
-
-    // Check if authentication with Zalter is enabled
-    // If not enabled, then redirect is not required
-    if (!ENABLE_AUTH) {
-      return;
-    }
-
-    // Check if auth has been skipped
-    // From sign-in page we may have set "skip-auth" to "true"
-    // If this has been skipped, then redirect to "sign-in" directly
-    const authSkipped = globalThis.sessionStorage.getItem('skip-auth') === 'true';
-
-    if (authSkipped) {
-      // Cleanup the skip auth state
-      globalThis.sessionStorage.removeItem('skip-auth');
-
-      // Redirect to sign-in page
-      Router.push('/sign-in').catch(console.error);
-      return;
-    }
-
     try {
-      if (!auth) return console.error('auth still undefined');
-
-      // This can be call inside AuthProvider component, but we do it here for simplicity
-      await auth.signOut();
-
-      // Update Auth Context state
-      authContext.signOut();
+      await signOut();
 
       // Redirect to sign-in page
-      Router.push('/sign-in').catch(console.error);
+      Router.push('/login').catch(console.error);
     } catch (err) {
       console.error(err);
     }
