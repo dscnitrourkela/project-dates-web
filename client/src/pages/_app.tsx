@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { CacheProvider } from '@emotion/react';
 
 import { EmotionCache } from '@emotion/cache';
@@ -8,7 +8,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import Head from 'next/head';
-import { AuthConsumer, AuthProvider } from 'store/contexts';
+import { AuthProvider } from 'store/contexts';
 
 import { theme } from '../theme';
 import { createEmotionCache } from '../utils/create-emotion-cache';

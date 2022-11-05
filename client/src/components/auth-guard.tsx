@@ -34,7 +34,7 @@ export const AuthGuard: React.FC<React.PropsWithChildren> = ({ children }) => {
       router
         .replace({
           pathname: '/login',
-          query: router.asPath !== '/' ? { continueUrl: router.asPath } : undefined,
+          query: router.asPath !== '/dashboard' ? { continueUrl: router.asPath } : undefined,
         })
         .catch(console.error);
     } else {

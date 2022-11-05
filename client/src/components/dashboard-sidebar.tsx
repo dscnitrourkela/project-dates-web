@@ -1,7 +1,14 @@
 import React, { useEffect } from 'react';
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { Box, Button, Divider, Drawer, Typography, useMediaQuery } from '@mui/material';
+import {
+  Box,
+  Button,
+  Divider,
+  Drawer,
+  Typography,
+  useMediaQuery
+} from '@mui/material';
 import { Theme } from '@mui/material/styles';
 
 import { ChartBar as ChartBarIcon } from 'icons/chart-bar';
@@ -21,7 +28,7 @@ import { NavItem } from './nav-item';
 
 const items = [
   {
-    href: '/',
+    href: '/dashboard',
     icon: <ChartBarIcon fontSize="small" />,
     title: 'Dashboard',
   },

@@ -62,7 +62,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => 
           accessToken,
         },
       });
-      Router.push('/');
     } catch (error) {
       setLoading(false);
       const {
@@ -82,7 +81,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => 
       dispatch({
         type: AUTH_ACTION_TYPE.SIGN_OUT,
       });
-      Router.push('/login');
     } catch (error) {
       setLoading(false);
       console.error(error);
@@ -110,6 +108,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => 
               accessToken,
             },
           });
+          Router.push('/dashboard');
         } else {
           Router.push('/login');
         }
