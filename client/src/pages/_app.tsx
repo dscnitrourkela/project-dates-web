@@ -1,5 +1,8 @@
+import 'react-toastify/dist/ReactToastify.css';
+
 import React from 'react';
 import { CacheProvider } from '@emotion/react';
+import { ToastContainer } from 'react-toastify';
 
 import { EmotionCache } from '@emotion/cache';
 import { CssBaseline } from '@mui/material';
@@ -31,20 +34,26 @@ const App: React.FC<IAppProps> = (props) => {
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
-    <CacheProvider value={emotionCache}>
-      <Head>
-        <title>Material Kit Pro</title>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-      </Head>
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <AuthProvider>
-            <ApolloWrapper>{getLayout(<Component {...pageProps} />)}</ApolloWrapper>
-          </AuthProvider>
-        </ThemeProvider>
-      </LocalizationProvider>
-    </CacheProvider>
+    <ApolloWrapper>
+      <AuthProvider>
+        <CacheProvider value={emotionCache}>
+          <Head>
+            <title>NITR Avenue Dashboard</title>
+            <meta name="viewport" content="initial-scale=1, width=device-width" />
+          </Head>
+
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+
+              {getLayout(<Component {...pageProps} />)}
+            </ThemeProvider>
+          </LocalizationProvider>
+
+          <ToastContainer />
+        </CacheProvider>
+      </AuthProvider>
+    </ApolloWrapper>
   );
 };
 

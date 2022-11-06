@@ -1,0 +1,22 @@
+query User($uid: ID) {
+  user(uid: $uid) {
+    email
+    id
+    uid
+    name
+    photo
+    gender
+    dob
+    state
+    city
+    college
+    stream
+    mobile
+    selfID
+    rollNumber
+    fests {
+      name
+      description
+    }
+  }
+}

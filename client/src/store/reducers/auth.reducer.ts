@@ -1,6 +1,7 @@
 import {
   AUTH_ACTION_TYPE,
-  AuthActionType
+  AuthActionType,
+  IUser
 } from '../actions';
 
 export const authInitialState = {
@@ -9,7 +10,11 @@ export const authInitialState = {
   user: null,
 };
 
-export type AuthInitialState = typeof authInitialState;
+export type AuthInitialState = {
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  user: null | IUser;
+};
 
 export const authReducer = (state: AuthInitialState, action: AuthActionType): AuthInitialState => {
   switch (action.type) {

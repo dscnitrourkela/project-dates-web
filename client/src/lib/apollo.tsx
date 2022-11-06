@@ -11,8 +11,6 @@ import {
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 
-import { useAuthContext } from '../store/contexts';
-
 const cache = new InMemoryCache();
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
@@ -40,7 +38,7 @@ const link = from([
   }),
 ]);
 
-const getApolloLink = (token) => {
+export const getApolloLink = (token?: unknown) => {
   const authLink = setContext((_, { headers }) => ({
     headers: {
       ...headers,
@@ -50,18 +48,15 @@ const getApolloLink = (token) => {
   return authLink.concat(link);
 };
 
-const client = (token) =>
-  new ApolloClient({
-    cache,
-    link: getApolloLink(token),
-    name: 'avenue-dashboard-client',
-    queryDeduplication: false,
-  });
+export const GraphQLClient = new ApolloClient({
+  cache,
+  link: getApolloLink(),
+  name: 'avenue-dashboard-client',
+  queryDeduplication: false,
+});
 
-const ApolloWrapper = ({ children }) => {
-  const { user } = useAuthContext();
-  console.log(user);
-  return <ApolloProvider client={client(user?.accessToken)}>{children}</ApolloProvider>;
-};
+const ApolloWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <ApolloProvider client={GraphQLClient}>{children}</ApolloProvider>
+);
 
 export default ApolloWrapper;

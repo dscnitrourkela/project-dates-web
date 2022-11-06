@@ -10,6 +10,7 @@ export interface IUser extends User {
   name?: string;
   rollNumber?: string;
   accessToken: string;
+  uid: string;
 }
 
 export interface AuthLoadingActionType {
