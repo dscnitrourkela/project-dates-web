@@ -632,6 +632,28 @@ export type UserUpdateInputType = {
   stream?: InputMaybe<Scalars['String']>;
 };
 
+export type EventQueryVariables = Exact<{
+  eventId?: InputMaybe<Scalars['ID']>;
+  orgId?: InputMaybe<Scalars['ID']>;
+  orgType?: InputMaybe<OrgType>;
+  startDate?: InputMaybe<Scalars['DateTime']>;
+  endDate?: InputMaybe<Scalars['DateTime']>;
+  status?: InputMaybe<StatusType>;
+}>;
+
+
+export type EventQuery = { __typename?: 'Query', event?: Array<{ __typename?: 'Event', id: string, name: string, description: string, poster: string, startDate: any, endDate: any, notes: Array<string>, orgType: OrgType, weekly: boolean, repeatDay?: RepeatType | null, priority: number, type?: string | null, status: StatusType, locationID: string, orgID: Array<string> } | null> | null };
+
+export type EventRegistrationQueryVariables = Exact<{
+  eventId?: InputMaybe<Scalars['ID']>;
+  userId?: InputMaybe<Scalars['ID']>;
+  eventRegistrationId?: InputMaybe<Scalars['ID']>;
+  orgId?: InputMaybe<Scalars['ID']>;
+}>;
+
+
+export type EventRegistrationQuery = { __typename?: 'Query', eventRegistration?: Array<{ __typename?: 'EventRegistration', user?: { __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, ca: Array<string>, referredBy?: string | null, fests: Array<{ __typename?: 'Org', name: string, description: string }> } | null } | null> | null };
+
 export type UserQueryVariables = Exact<{
   festID?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
   id?: InputMaybe<Scalars['ID']>;
@@ -649,6 +671,131 @@ export type UserQueryVariables = Exact<{
 export type UserQuery = { __typename?: 'Query', user?: Array<{ __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, ca: Array<string>, referredBy?: string | null, fests: Array<{ __typename?: 'Org', name: string, description: string }> } | null> | null };
 
 
+export const EventDocument = gql`
+    query Event($eventId: ID, $orgId: ID, $orgType: OrgType, $startDate: DateTime, $endDate: DateTime, $status: StatusType) {
+  event(
+    id: $eventId
+    orgID: $orgId
+    orgType: $orgType
+    startDate: $startDate
+    endDate: $endDate
+    status: $status
+  ) {
+    id
+    name
+    description
+    poster
+    startDate
+    endDate
+    notes
+    orgType
+    weekly
+    repeatDay
+    priority
+    type
+    status
+    locationID
+    orgID
+  }
+}
+    `;
+
+/**
+ * __useEventQuery__
+ *
+ * To run a query within a React component, call `useEventQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEventQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEventQuery({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *      orgId: // value for 'orgId'
+ *      orgType: // value for 'orgType'
+ *      startDate: // value for 'startDate'
+ *      endDate: // value for 'endDate'
+ *      status: // value for 'status'
+ *   },
+ * });
+ */
+export function useEventQuery(baseOptions?: Apollo.QueryHookOptions<EventQuery, EventQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EventQuery, EventQueryVariables>(EventDocument, options);
+      }
+export function useEventLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EventQuery, EventQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EventQuery, EventQueryVariables>(EventDocument, options);
+        }
+export type EventQueryHookResult = ReturnType<typeof useEventQuery>;
+export type EventLazyQueryHookResult = ReturnType<typeof useEventLazyQuery>;
+export type EventQueryResult = Apollo.QueryResult<EventQuery, EventQueryVariables>;
+export const EventRegistrationDocument = gql`
+    query EventRegistration($eventId: ID, $userId: ID, $eventRegistrationId: ID, $orgId: ID) {
+  eventRegistration(
+    eventID: $eventId
+    userID: $userId
+    id: $eventRegistrationId
+    orgID: $orgId
+  ) {
+    user {
+      email
+      id
+      uid
+      name
+      photo
+      gender
+      dob
+      state
+      city
+      college
+      stream
+      mobile
+      selfID
+      rollNumber
+      fests {
+        name
+        description
+      }
+      ca
+      referredBy
+    }
+  }
+}
+    `;
+
+/**
+ * __useEventRegistrationQuery__
+ *
+ * To run a query within a React component, call `useEventRegistrationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEventRegistrationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEventRegistrationQuery({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *      userId: // value for 'userId'
+ *      eventRegistrationId: // value for 'eventRegistrationId'
+ *      orgId: // value for 'orgId'
+ *   },
+ * });
+ */
+export function useEventRegistrationQuery(baseOptions?: Apollo.QueryHookOptions<EventRegistrationQuery, EventRegistrationQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EventRegistrationQuery, EventRegistrationQueryVariables>(EventRegistrationDocument, options);
+      }
+export function useEventRegistrationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EventRegistrationQuery, EventRegistrationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EventRegistrationQuery, EventRegistrationQueryVariables>(EventRegistrationDocument, options);
+        }
+export type EventRegistrationQueryHookResult = ReturnType<typeof useEventRegistrationQuery>;
+export type EventRegistrationLazyQueryHookResult = ReturnType<typeof useEventRegistrationLazyQuery>;
+export type EventRegistrationQueryResult = Apollo.QueryResult<EventRegistrationQuery, EventRegistrationQueryVariables>;
 export const UserDocument = gql`
     query User($festID: [String!], $id: ID, $uid: ID, $email: String, $city: String, $state: String, $college: String, $stream: String, $referredBy: String, $isNitrStudent: Boolean) {
   user(

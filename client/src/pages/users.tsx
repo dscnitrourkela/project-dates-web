@@ -13,9 +13,9 @@ import { useUserQuery } from '../graphql/graphql-types';
 const Page = () => {
   const [showNitrStudents, setShowNitrStudents] = useState(true);
   const {
-    loading: nonNitrUserLoading,
-    error: nonNitrUserError,
-    data: nonNitrUserData,
+    loading: userLoading,
+    error: userError,
+    data: userData,
     refetch,
   } = useUserQuery({
     variables: {
@@ -33,10 +33,10 @@ const Page = () => {
   };
 
   const renderUsers = () => {
-    if (nonNitrUserLoading) return <>Loading...</>;
-    if (nonNitrUserError) return <>Error...</>;
+    if (userLoading) return <>Loading...</>;
+    if (userError) return <>Error...</>;
 
-    return <CustomerListResults users={nonNitrUserData} customers={customers} />;
+    return <CustomerListResults users={userData} customers={customers} />;
   };
 
   return (
