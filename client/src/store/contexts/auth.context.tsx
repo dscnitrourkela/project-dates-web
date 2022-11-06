@@ -104,6 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => 
 
           const accessToken = await user.getIdToken();
           GraphQLClient.setLink(getApolloLink(accessToken));
+          console.log(accessToken, user.uid);
 
           await getUser({
             variables: {

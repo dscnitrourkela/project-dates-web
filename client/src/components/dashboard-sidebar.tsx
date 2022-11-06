@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import {
   Box,
-  Button,
   Divider,
   Drawer,
   Typography,
@@ -33,19 +31,19 @@ const items = [
     title: 'Dashboard',
   },
   {
-    href: '/customers',
+    href: '/users',
     icon: <UsersIcon fontSize="small" />,
-    title: 'Customers',
+    title: 'Users',
   },
   {
     href: '/products',
     icon: <ShoppingBagIcon fontSize="small" />,
-    title: 'Products',
+    title: 'Events',
   },
   {
     href: '/account',
     icon: <UserIcon fontSize="small" />,
-    title: 'Account',
+    title: 'Transactions',
   },
   {
     href: '/settings',
@@ -55,17 +53,22 @@ const items = [
   {
     href: '/login',
     icon: <LockIcon fontSize="small" />,
-    title: 'Login',
+    title: 'Permissions',
   },
   {
     href: '/register',
     icon: <UserAddIcon fontSize="small" />,
-    title: 'Register',
+    title: 'Developer Info',
   },
   {
     href: '/404',
     icon: <XCircleIcon fontSize="small" />,
-    title: 'Error',
+    title: 'Locations',
+  },
+  {
+    href: '/404',
+    icon: <XCircleIcon fontSize="small" />,
+    title: 'Story',
   },
 ];
 
@@ -184,18 +187,6 @@ export const DashboardSidebar: React.FC<IDashboardSidebar> = (props) => {
           >
             <img alt="Go to pro" src="/static/images/sidebar_pro.png" />
           </Box>
-          <NextLink href="https://material-kit-pro-react.devias.io/" passHref>
-            <Button
-              color="secondary"
-              component="a"
-              endIcon={<OpenInNewIcon />}
-              fullWidth
-              sx={{ mt: 2 }}
-              variant="contained"
-            >
-              Pro Live Preview
-            </Button>
-          </NextLink>
         </Box>
       </Box>
     </>

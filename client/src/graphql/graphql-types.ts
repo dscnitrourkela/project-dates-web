@@ -633,16 +633,36 @@ export type UserUpdateInputType = {
 };
 
 export type UserQueryVariables = Exact<{
+  festID?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']>;
   uid?: InputMaybe<Scalars['ID']>;
+  email?: InputMaybe<Scalars['String']>;
+  city?: InputMaybe<Scalars['String']>;
+  state?: InputMaybe<Scalars['String']>;
+  college?: InputMaybe<Scalars['String']>;
+  stream?: InputMaybe<Scalars['String']>;
+  referredBy?: InputMaybe<Scalars['String']>;
+  isNitrStudent?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', user?: Array<{ __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, fests: Array<{ __typename?: 'Org', name: string, description: string }> } | null> | null };
+export type UserQuery = { __typename?: 'Query', user?: Array<{ __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, ca: Array<string>, referredBy?: string | null, fests: Array<{ __typename?: 'Org', name: string, description: string }> } | null> | null };
 
 
 export const UserDocument = gql`
-    query User($uid: ID) {
-  user(uid: $uid) {
+    query User($festID: [String!], $id: ID, $uid: ID, $email: String, $city: String, $state: String, $college: String, $stream: String, $referredBy: String, $isNitrStudent: Boolean) {
+  user(
+    festID: $festID
+    id: $id
+    uid: $uid
+    email: $email
+    city: $city
+    state: $state
+    college: $college
+    stream: $stream
+    referredBy: $referredBy
+    isNitrStudent: $isNitrStudent
+  ) {
     email
     id
     uid
@@ -661,6 +681,8 @@ export const UserDocument = gql`
       name
       description
     }
+    ca
+    referredBy
   }
 }
     `;
@@ -677,7 +699,16 @@ export const UserDocument = gql`
  * @example
  * const { data, loading, error } = useUserQuery({
  *   variables: {
+ *      festID: // value for 'festID'
+ *      id: // value for 'id'
  *      uid: // value for 'uid'
+ *      email: // value for 'email'
+ *      city: // value for 'city'
+ *      state: // value for 'state'
+ *      college: // value for 'college'
+ *      stream: // value for 'stream'
+ *      referredBy: // value for 'referredBy'
+ *      isNitrStudent: // value for 'isNitrStudent'
  *   },
  * });
  */
