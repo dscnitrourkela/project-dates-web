@@ -10,6 +10,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import Head from 'next/head';
 import { AuthProvider } from 'store/contexts';
 
+import ApolloWrapper from '../lib/apollo';
 import { theme } from '../theme';
 import { createEmotionCache } from '../utils/create-emotion-cache';
 import { registerChartJs } from '../utils/register-chart-js';
@@ -38,7 +39,9 @@ const App: React.FC<IAppProps> = (props) => {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <AuthProvider>{getLayout(<Component {...pageProps} />)}</AuthProvider>
+          <AuthProvider>
+            <ApolloWrapper>{getLayout(<Component {...pageProps} />)}</ApolloWrapper>
+          </AuthProvider>
         </ThemeProvider>
       </LocalizationProvider>
     </CacheProvider>
