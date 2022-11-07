@@ -665,6 +665,15 @@ export type EventRegistrationQueryVariables = Exact<{
 
 export type EventRegistrationQuery = { __typename?: 'Query', eventRegistration?: Array<{ __typename?: 'EventRegistration', user?: { __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, ca: Array<string>, referredBy?: string | null } | null } | null> | null };
 
+export type OrgQueryVariables = Exact<{
+  orgID?: InputMaybe<Scalars['ID']>;
+  orgType?: InputMaybe<OrgType>;
+  orgSubType?: InputMaybe<OrgSubType>;
+}>;
+
+
+export type OrgQuery = { __typename?: 'Query', org?: Array<{ __typename?: 'Org', id: string, name: string, description: string, logo: string, tagline?: string | null, coverImg?: string | null, theme?: string | null, registrationFee: number, startDate?: any | null, endDate?: any | null, status: StatusType, orgSubType: OrgSubType, orgType: OrgType, festID?: string | null } | null> | null };
+
 export type TransactionQueryVariables = Exact<{
   orgID?: InputMaybe<Scalars['ID']>;
 }>;
@@ -846,6 +855,56 @@ export function useEventRegistrationLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type EventRegistrationQueryHookResult = ReturnType<typeof useEventRegistrationQuery>;
 export type EventRegistrationLazyQueryHookResult = ReturnType<typeof useEventRegistrationLazyQuery>;
 export type EventRegistrationQueryResult = Apollo.QueryResult<EventRegistrationQuery, EventRegistrationQueryVariables>;
+export const OrgDocument = gql`
+    query Org($orgID: ID, $orgType: OrgType, $orgSubType: OrgSubType) {
+  org(id: $orgID, orgType: $orgType, orgSubType: $orgSubType) {
+    id
+    name
+    description
+    logo
+    tagline
+    coverImg
+    theme
+    registrationFee
+    startDate
+    endDate
+    status
+    orgSubType
+    orgType
+    festID
+  }
+}
+    `;
+
+/**
+ * __useOrgQuery__
+ *
+ * To run a query within a React component, call `useOrgQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrgQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrgQuery({
+ *   variables: {
+ *      orgID: // value for 'orgID'
+ *      orgType: // value for 'orgType'
+ *      orgSubType: // value for 'orgSubType'
+ *   },
+ * });
+ */
+export function useOrgQuery(baseOptions?: Apollo.QueryHookOptions<OrgQuery, OrgQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OrgQuery, OrgQueryVariables>(OrgDocument, options);
+      }
+export function useOrgLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OrgQuery, OrgQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OrgQuery, OrgQueryVariables>(OrgDocument, options);
+        }
+export type OrgQueryHookResult = ReturnType<typeof useOrgQuery>;
+export type OrgLazyQueryHookResult = ReturnType<typeof useOrgLazyQuery>;
+export type OrgQueryResult = Apollo.QueryResult<OrgQuery, OrgQueryVariables>;
 export const TransactionDocument = gql`
     query Transaction($orgID: ID) {
   transaction(orgID: $orgID) {

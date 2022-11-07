@@ -11,6 +11,8 @@ export interface IUser extends User {
   rollNumber?: string;
   accessToken: string;
   uid: string;
+  permissions?: Record<string, unknown>;
+  userID?: string;
 }
 
 export interface AuthLoadingActionType {

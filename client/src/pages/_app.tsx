@@ -12,6 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import Head from 'next/head';
 import { AuthProvider } from 'store/contexts';
+import { OrgProvider } from 'store/contexts/org.context';
 
 import ApolloWrapper from '../lib/apollo';
 import { theme } from '../theme';
@@ -43,11 +44,13 @@ const App: React.FC<IAppProps> = (props) => {
           </Head>
 
           <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
+            <OrgProvider>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
 
-              {getLayout(<Component {...pageProps} />)}
-            </ThemeProvider>
+                {getLayout(<Component {...pageProps} />)}
+              </ThemeProvider>
+            </OrgProvider>
           </LocalizationProvider>
 
           <ToastContainer />

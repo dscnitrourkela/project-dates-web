@@ -9,9 +9,11 @@ import { CustomerListResults } from '../components/customer/customer-list-result
 import { CustomerListToolbar } from '../components/customer/customer-list-toolbar';
 import { DashboardLayout } from '../components/dashboard-layout';
 import { useUserQuery } from '../graphql/graphql-types';
+import { useOrgContext } from '../store/contexts/org.context';
 
 const Page = () => {
   const [showNitrStudents, setShowNitrStudents] = useState(true);
+  const { org } = useOrgContext();
   const {
     loading: userLoading,
     error: userError,
@@ -19,7 +21,7 @@ const Page = () => {
     refetch,
   } = useUserQuery({
     variables: {
-      festID: ['innovision-2022'],
+      festID: org.festID,
       isNitrStudent: showNitrStudents,
     },
   });
@@ -27,7 +29,7 @@ const Page = () => {
   const updateUserList = (param: boolean) => {
     setShowNitrStudents(param);
     refetch({
-      festID: ['innovision-2022'],
+      festID: org.festID,
       isNitrStudent: param,
     });
   };

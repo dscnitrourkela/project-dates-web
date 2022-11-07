@@ -1,0 +1,18 @@
+query Org($orgID: ID, $orgType: OrgType, $orgSubType: OrgSubType) {
+  org(id: $orgID, orgType: $orgType, orgSubType: $orgSubType) {
+    id
+    name
+    description
+    logo
+    tagline
+    coverImg
+    theme
+    registrationFee
+    startDate
+    endDate
+    status
+    orgSubType
+    orgType
+    festID
+  }
+}

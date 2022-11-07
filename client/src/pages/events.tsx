@@ -13,8 +13,10 @@ import { DashboardLayout } from '../components/dashboard-layout';
 import { ProductCard } from '../components/product/product-card';
 import { ProductListToolbar } from '../components/product/product-list-toolbar';
 import { useEventQuery } from '../graphql/graphql-types';
+import { useOrgContext } from '../store/contexts/org.context';
 
 const Page = () => {
+  const { org } = useOrgContext();
   const [filteredEvents, setFilteredEvents] = useState([]);
   const {
     loading: eventLoading,
@@ -23,7 +25,7 @@ const Page = () => {
     refetch,
   } = useEventQuery({
     variables: {
-      orgId: '635dfb41fabfb5342048eec4',
+      orgId: org.id,
     },
   });
 

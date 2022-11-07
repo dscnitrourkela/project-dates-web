@@ -16,6 +16,7 @@ import {
 import Router from 'next/router';
 
 import { useUserLazyQuery } from '../../graphql/graphql-types';
+import { avenueApi } from '../../lib/api';
 import {
   getApolloLink,
   GraphQLClient
@@ -112,24 +113,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => 
             },
           });
 
-          // if (!userLoading && !userData?.user[0] && !userError) {
-          //   toast.error('User not registered. Please register via the Avenue App');
-          //   Router.push('/login');
-          //   return;
-          // }
-
-          // if (!userLoading && userError) {
-          //   toast.error('Something went wrong, please try again');
-          //   Router.push('/login');
-          //   return;
-          // }
+          const { data: permissions } = await avenueApi.get('/auth', {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
 
           dispatch({
             type: AUTH_ACTION_TYPE.SIGN_IN,
             payload: {
-              ...user,
               accessToken,
+              ...user,
               ...(!userLoading && userData?.user[0] ? userData.user[0] : {}),
+              permissions: permissions.permissions,
+              userID: permissions.user.user_id,
             },
           });
           Router.push('/dashboard');

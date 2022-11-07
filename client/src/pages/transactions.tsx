@@ -7,11 +7,13 @@ import Head from 'next/head';
 
 import { DashboardLayout } from '../components/dashboard-layout';
 import { useTransactionQuery } from '../graphql/graphql-types';
+import { useOrgContext } from '../store/contexts/org.context';
 
 const Transactions = () => {
+  const { org } = useOrgContext();
   const { loading, error, data } = useTransactionQuery({
     variables: {
-      orgID: '635dfb41fabfb5342048eec4',
+      orgID: org.id,
     },
   });
 

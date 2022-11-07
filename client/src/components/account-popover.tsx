@@ -16,12 +16,14 @@ import { AuthContext } from 'store/contexts';
 export interface IAccountPopover extends PopoverProps {
   onClose: () => void;
   open: boolean;
+  name?: string;
 }
 
 export const AccountPopover: React.FC<IAccountPopover> = ({
   anchorEl,
   onClose,
   open,
+  name,
   ...other
 }) => {
   const { signOut } = useContext(AuthContext);
@@ -59,7 +61,7 @@ export const AccountPopover: React.FC<IAccountPopover> = ({
       >
         <Typography variant="overline">Account</Typography>
         <Typography color="text.secondary" variant="body2">
-          John Doe
+          {name}
         </Typography>
       </Box>
       <MenuList
