@@ -36,12 +36,12 @@ const items = [
     title: 'Users',
   },
   {
-    href: '/products',
+    href: '/events',
     icon: <ShoppingBagIcon fontSize="small" />,
     title: 'Events',
   },
   {
-    href: '/account',
+    href: '/transactions',
     icon: <UserIcon fontSize="small" />,
     title: 'Transactions',
   },
@@ -51,22 +51,22 @@ const items = [
     title: 'Settings',
   },
   {
-    href: '/login',
+    href: '/permissions',
     icon: <LockIcon fontSize="small" />,
     title: 'Permissions',
   },
   {
-    href: '/register',
+    href: '/developer-info',
     icon: <UserAddIcon fontSize="small" />,
     title: 'Developer Info',
   },
   {
-    href: '/404',
+    href: '/locations',
     icon: <XCircleIcon fontSize="small" />,
     title: 'Locations',
   },
   {
-    href: '/404',
+    href: '/story',
     icon: <XCircleIcon fontSize="small" />,
     title: 'Story',
   },

@@ -666,7 +666,7 @@ export type EventRegistrationQueryVariables = Exact<{
 export type EventRegistrationQuery = { __typename?: 'Query', eventRegistration?: Array<{ __typename?: 'EventRegistration', user?: { __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, ca: Array<string>, referredBy?: string | null } | null } | null> | null };
 
 export type TransactionQueryVariables = Exact<{
-  orgId?: InputMaybe<Scalars['ID']>;
+  orgID?: InputMaybe<Scalars['ID']>;
 }>;
 
 
@@ -847,8 +847,8 @@ export type EventRegistrationQueryHookResult = ReturnType<typeof useEventRegistr
 export type EventRegistrationLazyQueryHookResult = ReturnType<typeof useEventRegistrationLazyQuery>;
 export type EventRegistrationQueryResult = Apollo.QueryResult<EventRegistrationQuery, EventRegistrationQueryVariables>;
 export const TransactionDocument = gql`
-    query Transaction($orgId: ID) {
-  transaction(orgID: $orgId) {
+    query Transaction($orgID: ID) {
+  transaction(orgID: $orgID) {
     amount
     transactionID
     type
@@ -874,7 +874,7 @@ export const TransactionDocument = gql`
  * @example
  * const { data, loading, error } = useTransactionQuery({
  *   variables: {
- *      orgId: // value for 'orgId'
+ *      orgID: // value for 'orgID'
  *   },
  * });
  */

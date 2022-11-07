@@ -1,5 +1,5 @@
-query Transaction($orgId: ID) {
-  transaction(orgID: $orgId) {
+query Transaction($orgID: ID) {
+  transaction(orgID: $orgID) {
     amount
     transactionID
     type

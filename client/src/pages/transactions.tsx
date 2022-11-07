@@ -1,42 +1,46 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { Box, Container } from '@mui/material';
 
+import MUIDataTable from 'mui-datatables';
 import Head from 'next/head';
 
-import { customers } from '../__mocks__/customers';
-import { CustomerListResults } from '../components/customer/customer-list-results';
-import { CustomerListToolbar } from '../components/customer/customer-list-toolbar';
 import { DashboardLayout } from '../components/dashboard-layout';
-import { useUserQuery } from '../graphql/graphql-types';
+import { useTransactionQuery } from '../graphql/graphql-types';
 
 const Transactions = () => {
-  const [showNitrStudents, setShowNitrStudents] = useState(true);
-  const {
-    loading: userLoading,
-    error: userError,
-    data: userData,
-    refetch,
-  } = useUserQuery({
+  const { loading, error, data } = useTransactionQuery({
     variables: {
-      festID: ['innovision-2022'],
-      isNitrStudent: showNitrStudents,
+      orgID: '635dfb41fabfb5342048eec4',
     },
   });
 
-  const updateUserList = (param: boolean) => {
-    setShowNitrStudents(param);
-    refetch({
-      festID: ['innovision-2022'],
-      isNitrStudent: param,
-    });
-  };
-
   const renderUsers = () => {
-    if (userLoading) return <>Loading...</>;
-    if (userError) return <>Error...</>;
+    if (loading) return <>Loading...</>;
+    if (error) return <>Error...</>;
 
-    return <CustomerListResults users={userData} customers={customers} />;
+    return (
+      <MUIDataTable
+        title={'User List'}
+        data={data.transaction.map((transaction, index) => ({
+          ...transaction,
+          ...transaction.user,
+          '#': index,
+        }))}
+        columns={[
+          '#',
+          ...Object.keys(data.transaction[0] || {}),
+          ...Object.keys(data.transaction[0]?.user || {}),
+        ]}
+        options={{
+          filter: true,
+          sort: true,
+          search: true,
+          filterType: 'dropdown',
+          selectableRows: false,
+        }}
+      />
+    );
   };
 
   return (
@@ -52,10 +56,6 @@ const Transactions = () => {
         }}
       >
         <Container maxWidth={false}>
-          <CustomerListToolbar
-            showNitrStudents={showNitrStudents}
-            setShowNitrStudents={updateUserList}
-          />
           <Box sx={{ mt: 3 }}>{renderUsers()}</Box>
         </Container>
       </Box>
