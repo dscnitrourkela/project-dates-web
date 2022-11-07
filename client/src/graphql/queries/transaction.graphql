@@ -1,0 +1,13 @@
+query Transaction($orgId: ID) {
+  transaction(orgID: $orgId) {
+    amount
+    transactionID
+    type
+    timestamp
+    user {
+      name
+      email
+      mobile
+    }
+  }
+}

@@ -15,10 +15,6 @@ query EventRegistration($eventId: ID, $userId: ID, $eventRegistrationId: ID, $or
       mobile
       selfID
       rollNumber
-      fests {
-        name
-        description
-      }
       ca
       referredBy
     }

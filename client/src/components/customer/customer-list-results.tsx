@@ -27,16 +27,22 @@ export const CustomerListResults: React.FC<ICustomerListResults> = ({
         <Box sx={{ minWidth: 1050, overflowX: 'auto' }}>
           <MUIDataTable
             title={'User List'}
-            data={users}
-            columns={Object.keys(users[0]).filter(
-              (key) =>
-                !['fests', 'ca', 'id', '__typename', 'selfID', 'dob', 'uid', 'photo'].includes(key),
-            )}
+            data={users.map((user, index) => ({ ...user, '#': index }))}
+            columns={[
+              '#',
+              ...Object.keys(users[0]).filter(
+                (key) =>
+                  !['fests', 'ca', 'id', '__typename', 'selfID', 'dob', 'uid', 'photo'].includes(
+                    key,
+                  ),
+              ),
+            ]}
             options={{
               filter: true,
               sort: true,
               search: true,
               filterType: 'dropdown',
+              selectableRows: false,
             }}
           />
         </Box>

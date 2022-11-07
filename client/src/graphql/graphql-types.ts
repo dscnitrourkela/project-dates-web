@@ -41,6 +41,8 @@ export type Event = {
   __typename?: 'Event';
   description: Scalars['String'];
   endDate: Scalars['DateTime'];
+  eventRegistration: Array<Maybe<EventRegistration>>;
+  eventRegistrationCount: Scalars['Int'];
   id: Scalars['ID'];
   location?: Maybe<Location>;
   locationID: Scalars['ID'];
@@ -632,6 +634,15 @@ export type UserUpdateInputType = {
   stream?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateEventMutationVariables = Exact<{
+  updateEventId: Scalars['ID'];
+  orgId: Scalars['ID'];
+  event: EventUpdateInputType;
+}>;
+
+
+export type UpdateEventMutation = { __typename?: 'Mutation', updateEvent?: { __typename?: 'Event', name: string, description: string } | null };
+
 export type EventQueryVariables = Exact<{
   eventId?: InputMaybe<Scalars['ID']>;
   orgId?: InputMaybe<Scalars['ID']>;
@@ -652,7 +663,14 @@ export type EventRegistrationQueryVariables = Exact<{
 }>;
 
 
-export type EventRegistrationQuery = { __typename?: 'Query', eventRegistration?: Array<{ __typename?: 'EventRegistration', user?: { __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, ca: Array<string>, referredBy?: string | null, fests: Array<{ __typename?: 'Org', name: string, description: string }> } | null } | null> | null };
+export type EventRegistrationQuery = { __typename?: 'Query', eventRegistration?: Array<{ __typename?: 'EventRegistration', user?: { __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, ca: Array<string>, referredBy?: string | null } | null } | null> | null };
+
+export type TransactionQueryVariables = Exact<{
+  orgId?: InputMaybe<Scalars['ID']>;
+}>;
+
+
+export type TransactionQuery = { __typename?: 'Query', transaction?: Array<{ __typename?: 'Transaction', amount: number, transactionID: string, type: TransactionType, timestamp: any, user: { __typename?: 'User', name?: string | null, email: string, mobile?: string | null } } | null> | null };
 
 export type UserQueryVariables = Exact<{
   festID?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
@@ -671,6 +689,42 @@ export type UserQueryVariables = Exact<{
 export type UserQuery = { __typename?: 'Query', user?: Array<{ __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, ca: Array<string>, referredBy?: string | null, fests: Array<{ __typename?: 'Org', name: string, description: string }> } | null> | null };
 
 
+export const UpdateEventDocument = gql`
+    mutation UpdateEvent($updateEventId: ID!, $orgId: ID!, $event: EventUpdateInputType!) {
+  updateEvent(id: $updateEventId, orgID: $orgId, event: $event) {
+    name
+    description
+  }
+}
+    `;
+export type UpdateEventMutationFn = Apollo.MutationFunction<UpdateEventMutation, UpdateEventMutationVariables>;
+
+/**
+ * __useUpdateEventMutation__
+ *
+ * To run a mutation, you first call `useUpdateEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateEventMutation, { data, loading, error }] = useUpdateEventMutation({
+ *   variables: {
+ *      updateEventId: // value for 'updateEventId'
+ *      orgId: // value for 'orgId'
+ *      event: // value for 'event'
+ *   },
+ * });
+ */
+export function useUpdateEventMutation(baseOptions?: Apollo.MutationHookOptions<UpdateEventMutation, UpdateEventMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateEventMutation, UpdateEventMutationVariables>(UpdateEventDocument, options);
+      }
+export type UpdateEventMutationHookResult = ReturnType<typeof useUpdateEventMutation>;
+export type UpdateEventMutationResult = Apollo.MutationResult<UpdateEventMutation>;
+export type UpdateEventMutationOptions = Apollo.BaseMutationOptions<UpdateEventMutation, UpdateEventMutationVariables>;
 export const EventDocument = gql`
     query Event($eventId: ID, $orgId: ID, $orgType: OrgType, $startDate: DateTime, $endDate: DateTime, $status: StatusType) {
   event(
@@ -755,10 +809,6 @@ export const EventRegistrationDocument = gql`
       mobile
       selfID
       rollNumber
-      fests {
-        name
-        description
-      }
       ca
       referredBy
     }
@@ -796,6 +846,49 @@ export function useEventRegistrationLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type EventRegistrationQueryHookResult = ReturnType<typeof useEventRegistrationQuery>;
 export type EventRegistrationLazyQueryHookResult = ReturnType<typeof useEventRegistrationLazyQuery>;
 export type EventRegistrationQueryResult = Apollo.QueryResult<EventRegistrationQuery, EventRegistrationQueryVariables>;
+export const TransactionDocument = gql`
+    query Transaction($orgId: ID) {
+  transaction(orgID: $orgId) {
+    amount
+    transactionID
+    type
+    timestamp
+    user {
+      name
+      email
+      mobile
+    }
+  }
+}
+    `;
+
+/**
+ * __useTransactionQuery__
+ *
+ * To run a query within a React component, call `useTransactionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTransactionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTransactionQuery({
+ *   variables: {
+ *      orgId: // value for 'orgId'
+ *   },
+ * });
+ */
+export function useTransactionQuery(baseOptions?: Apollo.QueryHookOptions<TransactionQuery, TransactionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TransactionQuery, TransactionQueryVariables>(TransactionDocument, options);
+      }
+export function useTransactionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TransactionQuery, TransactionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TransactionQuery, TransactionQueryVariables>(TransactionDocument, options);
+        }
+export type TransactionQueryHookResult = ReturnType<typeof useTransactionQuery>;
+export type TransactionLazyQueryHookResult = ReturnType<typeof useTransactionLazyQuery>;
+export type TransactionQueryResult = Apollo.QueryResult<TransactionQuery, TransactionQueryVariables>;
 export const UserDocument = gql`
     query User($festID: [String!], $id: ID, $uid: ID, $email: String, $city: String, $state: String, $college: String, $stream: String, $referredBy: String, $isNitrStudent: Boolean) {
   user(
