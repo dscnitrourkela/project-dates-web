@@ -21,7 +21,7 @@ const Page = () => {
     refetch,
   } = useUserQuery({
     variables: {
-      festID: org.festID,
+      festID: org?.festID,
       isNitrStudent: showNitrStudents,
     },
   });
@@ -29,7 +29,7 @@ const Page = () => {
   const updateUserList = (param: boolean) => {
     setShowNitrStudents(param);
     refetch({
-      festID: org.festID,
+      festID: org?.festID,
       isNitrStudent: param,
     });
   };

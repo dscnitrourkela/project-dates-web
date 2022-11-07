@@ -13,7 +13,7 @@ import {
   onAuthStateChanged,
   signInWithPopup
 } from 'firebase/auth';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 
 import { useUserLazyQuery } from '../../graphql/graphql-types';
 import { avenueApi } from '../../lib/api';
@@ -47,8 +47,11 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => {
+  const { query } = useRouter();
   const [state, dispatch] = useReducer(authReducer, authInitialState);
   const [getUser, { loading: userLoading, error: userError, data: userData }] = useUserLazyQuery();
+
+  if (userError) toast.error(userError.message);
 
   const setLoading = (isLoading = true) =>
     dispatch({
@@ -129,7 +132,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => 
               userID: permissions.user.user_id,
             },
           });
-          Router.push('/dashboard');
+          const { continueUrl } = query;
+          if (continueUrl) {
+            Router.push(`${continueUrl}`);
+          } else {
+            Router.push('/dashboard');
+          }
         } else {
           Router.push('/login');
         }

@@ -13,7 +13,7 @@ const Transactions = () => {
   const { org } = useOrgContext();
   const { loading, error, data } = useTransactionQuery({
     variables: {
-      orgID: org.id,
+      orgID: org?.id,
     },
   });
 

@@ -10,14 +10,14 @@ import {
 import { Theme } from '@mui/material/styles';
 
 import { ChartBar as ChartBarIcon } from 'icons/chart-bar';
-import { Cog as CogIcon } from 'icons/cog';
+// import { Cog as CogIcon } from 'icons/cog';
 import { Lock as LockIcon } from 'icons/lock';
 import { Selector as SelectorIcon } from 'icons/selector';
 import { ShoppingBag as ShoppingBagIcon } from 'icons/shopping-bag';
 import { User as UserIcon } from 'icons/user';
-import { UserAdd as UserAddIcon } from 'icons/user-add';
+// import { UserAdd as UserAddIcon } from 'icons/user-add';
 import { Users as UsersIcon } from 'icons/users';
-import { XCircle as XCircleIcon } from 'icons/x-circle';
+// import { XCircle as XCircleIcon } from 'icons/x-circle';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -46,30 +46,30 @@ const items = [
     title: 'Transactions',
   },
   {
-    href: '/settings',
-    icon: <CogIcon fontSize="small" />,
-    title: 'Settings',
-  },
-  {
     href: '/permissions',
     icon: <LockIcon fontSize="small" />,
     title: 'Permissions',
   },
-  {
-    href: '/developer-info',
-    icon: <UserAddIcon fontSize="small" />,
-    title: 'Developer Info',
-  },
-  {
-    href: '/locations',
-    icon: <XCircleIcon fontSize="small" />,
-    title: 'Locations',
-  },
-  {
-    href: '/story',
-    icon: <XCircleIcon fontSize="small" />,
-    title: 'Story',
-  },
+  // {
+  //   href: '/settings',
+  //   icon: <CogIcon fontSize="small" />,
+  //   title: 'Settings',
+  // },
+  // {
+  //   href: '/developer-info',
+  //   icon: <UserAddIcon fontSize="small" />,
+  //   title: 'Developer Info',
+  // },
+  // {
+  //   href: '/locations',
+  //   icon: <XCircleIcon fontSize="small" />,
+  //   title: 'Locations',
+  // },
+  // {
+  //   href: '/story',
+  //   icon: <XCircleIcon fontSize="small" />,
+  //   title: 'Story',
+  // },
 ];
 
 export interface IDashboardSidebar {

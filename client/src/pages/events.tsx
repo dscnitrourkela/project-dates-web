@@ -25,7 +25,7 @@ const Page = () => {
     refetch,
   } = useEventQuery({
     variables: {
-      orgId: org.id,
+      orgId: org?.id,
     },
   });
 
