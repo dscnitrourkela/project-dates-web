@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import { Box, Card } from '@mui/material';
@@ -11,15 +11,17 @@ import { UserQuery } from '../../graphql/graphql-types';
 
 interface ICustomerListResults extends React.PropsWithChildren {
   users: UserQuery;
-  customers?: unknown;
+  onPageChange: (pageNumber: number, rowsPerPage: number) => void;
 }
 
 export const CustomerListResults: React.FC<ICustomerListResults> = ({
   users: userData,
-  customers,
+  onPageChange,
   ...rest
 }) => {
   const users = userData.user;
+  const [pageNumber, setPageNumber] = useState<number | undefined>(1);
+  const [rowNumber, setRowNumber] = useState(10);
 
   return (
     <Card {...rest}>
@@ -27,7 +29,7 @@ export const CustomerListResults: React.FC<ICustomerListResults> = ({
         <Box sx={{ minWidth: 1050, overflowX: 'auto' }}>
           <MUIDataTable
             title={'User List'}
-            data={users.map((user, index) => ({ ...user, '#': index }))}
+            data={users.map((user, index) => ({ ...user, '#': index + 1 }))}
             columns={[
               '#',
               ...Object.keys(users[0]).filter(
@@ -42,7 +44,21 @@ export const CustomerListResults: React.FC<ICustomerListResults> = ({
               sort: true,
               search: true,
               filterType: 'dropdown',
-              selectableRows: false,
+              rowsPerPage: rowNumber,
+              page: pageNumber,
+              serverSide: true,
+              selectableRows: 'none',
+              onChangePage: (currentPageNumber: number) => {
+                console.log(rowNumber, currentPageNumber);
+                onPageChange(currentPageNumber, rowNumber);
+                setPageNumber(currentPageNumber);
+              },
+              onChangeRowsPerPage: (currentRowNumber: number) => {
+                console.log(currentRowNumber, pageNumber);
+                onPageChange(pageNumber, rowNumber);
+                setRowNumber(currentRowNumber);
+              },
+              pagination: true,
             }}
           />
         </Box>

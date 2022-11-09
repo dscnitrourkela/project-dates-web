@@ -186,8 +186,6 @@ export type Mutation = {
   updateOrg?: Maybe<Org>;
   /** Updates the existing team member record */
   updateTeam?: Maybe<Team>;
-  /** Updates an existing record of transation */
-  updateTransaction?: Maybe<Transaction>;
   /** Updates an existing user record */
   updateUser?: Maybe<User>;
 };
@@ -291,12 +289,6 @@ export type MutationUpdateTeamArgs = {
   id: Scalars['ID'];
   orgID: Scalars['ID'];
   team: TeamUpdateInputType;
-};
-
-
-export type MutationUpdateTransactionArgs = {
-  id: Scalars['ID'];
-  transaction: TransactionUpdateInputType;
 };
 
 
@@ -414,6 +406,7 @@ export type QueryEventArgs = {
   id?: InputMaybe<Scalars['ID']>;
   orgID?: InputMaybe<Scalars['ID']>;
   orgType?: InputMaybe<OrgType>;
+  pagination?: InputMaybe<PaginationInputType>;
   startDate?: InputMaybe<Scalars['DateTime']>;
   status?: InputMaybe<StatusType>;
 };
@@ -423,6 +416,7 @@ export type QueryEventRegistrationArgs = {
   eventID?: InputMaybe<Scalars['ID']>;
   id?: InputMaybe<Scalars['ID']>;
   orgID?: InputMaybe<Scalars['ID']>;
+  pagination?: InputMaybe<PaginationInputType>;
   userID?: InputMaybe<Scalars['ID']>;
 };
 
@@ -436,12 +430,14 @@ export type QueryOrgArgs = {
   id?: InputMaybe<Scalars['ID']>;
   orgSubType?: InputMaybe<OrgSubType>;
   orgType?: InputMaybe<OrgType>;
+  pagination?: InputMaybe<PaginationInputType>;
 };
 
 
 export type QueryStoryArgs = {
   id?: InputMaybe<Scalars['ID']>;
   orgID?: InputMaybe<Scalars['ID']>;
+  pagination?: InputMaybe<PaginationInputType>;
 };
 
 
@@ -453,6 +449,7 @@ export type QueryTeamArgs = {
 export type QueryTransactionArgs = {
   id?: InputMaybe<Scalars['ID']>;
   orgID?: InputMaybe<Scalars['ID']>;
+  pagination?: InputMaybe<PaginationInputType>;
   type?: InputMaybe<TransactionType>;
 };
 
@@ -464,6 +461,8 @@ export type QueryUserArgs = {
   festID?: InputMaybe<Array<Scalars['String']>>;
   id?: InputMaybe<Scalars['ID']>;
   isNitrStudent?: InputMaybe<Scalars['Boolean']>;
+  orgID?: InputMaybe<Scalars['ID']>;
+  pagination?: InputMaybe<PaginationInputType>;
   referredBy?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<Scalars['String']>;
   stream?: InputMaybe<Scalars['String']>;
@@ -568,14 +567,6 @@ export enum TransactionType {
   Registration = 'REGISTRATION'
 }
 
-/** Input arguments used in updateTransaction mutation */
-export type TransactionUpdateInputType = {
-  comment?: InputMaybe<Scalars['String']>;
-  orgID?: InputMaybe<Scalars['ID']>;
-  type?: InputMaybe<TransactionType>;
-  userID?: InputMaybe<Scalars['ID']>;
-};
-
 /** User of the application */
 export type User = {
   __typename?: 'User';
@@ -632,6 +623,12 @@ export type UserUpdateInputType = {
   selfID?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<Scalars['String']>;
   stream?: InputMaybe<Scalars['String']>;
+};
+
+/** Input arguments used for pagination details */
+export type PaginationInputType = {
+  skip?: Scalars['Int'];
+  take?: Scalars['Int'];
 };
 
 export type UpdateEventMutationVariables = Exact<{
@@ -692,6 +689,7 @@ export type UserQueryVariables = Exact<{
   stream?: InputMaybe<Scalars['String']>;
   referredBy?: InputMaybe<Scalars['String']>;
   isNitrStudent?: InputMaybe<Scalars['Boolean']>;
+  pagination?: InputMaybe<PaginationInputType>;
 }>;
 
 
@@ -949,7 +947,7 @@ export type TransactionQueryHookResult = ReturnType<typeof useTransactionQuery>;
 export type TransactionLazyQueryHookResult = ReturnType<typeof useTransactionLazyQuery>;
 export type TransactionQueryResult = Apollo.QueryResult<TransactionQuery, TransactionQueryVariables>;
 export const UserDocument = gql`
-    query User($festID: [String!], $id: ID, $uid: ID, $email: String, $city: String, $state: String, $college: String, $stream: String, $referredBy: String, $isNitrStudent: Boolean) {
+    query User($festID: [String!], $id: ID, $uid: ID, $email: String, $city: String, $state: String, $college: String, $stream: String, $referredBy: String, $isNitrStudent: Boolean, $pagination: paginationInputType) {
   user(
     festID: $festID
     id: $id
@@ -961,6 +959,7 @@ export const UserDocument = gql`
     stream: $stream
     referredBy: $referredBy
     isNitrStudent: $isNitrStudent
+    pagination: $pagination
   ) {
     email
     id
@@ -1008,6 +1007,7 @@ export const UserDocument = gql`
  *      stream: // value for 'stream'
  *      referredBy: // value for 'referredBy'
  *      isNitrStudent: // value for 'isNitrStudent'
+ *      pagination: // value for 'pagination'
  *   },
  * });
  */

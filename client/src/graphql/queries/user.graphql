@@ -9,6 +9,7 @@ query User(
   $stream: String
   $referredBy: String
   $isNitrStudent: Boolean
+  $pagination: paginationInputType
 ) {
   user(
     festID: $festID
@@ -21,6 +22,7 @@ query User(
     stream: $stream
     referredBy: $referredBy
     isNitrStudent: $isNitrStudent
+    pagination: $pagination
   ) {
     email
     id

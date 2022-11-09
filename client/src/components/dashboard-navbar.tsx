@@ -74,11 +74,11 @@ export const DashboardNavbar: React.FC<IDashboardNavbar> = ({ onSidebarOpen, ...
           userOrgs.map((id) => getOrgs({ variables: { orgID: id } })),
         );
         setOrgs(orgList.map(({ data }) => data.org[0]));
-        setOrg(orgList[0].data.org[0]);
+        setOrg(orgList[0]?.data.org[0]);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.permissions]);
+  }, [user?.permissions]);
 
   return (
     <>
