@@ -38,6 +38,7 @@ query User(
     mobile
     selfID
     rollNumber
+    festID
     fests {
       name
       description

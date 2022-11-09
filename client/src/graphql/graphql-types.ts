@@ -451,6 +451,7 @@ export type QueryTransactionArgs = {
   orgID?: InputMaybe<Scalars['ID']>;
   pagination?: InputMaybe<PaginationInputType>;
   type?: InputMaybe<TransactionType>;
+  userID?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -650,7 +651,7 @@ export type EventQueryVariables = Exact<{
 }>;
 
 
-export type EventQuery = { __typename?: 'Query', event?: Array<{ __typename?: 'Event', id: string, name: string, description: string, poster: string, startDate: any, endDate: any, notes: Array<string>, orgType: OrgType, weekly: boolean, repeatDay?: RepeatType | null, priority: number, type?: string | null, status: StatusType, locationID: string, orgID: Array<string> } | null> | null };
+export type EventQuery = { __typename?: 'Query', event?: Array<{ __typename?: 'Event', id: string, name: string, description: string, poster: string, startDate: any, endDate: any, notes: Array<string>, orgType: OrgType, weekly: boolean, repeatDay?: RepeatType | null, priority: number, type?: string | null, status: StatusType, locationID: string, orgID: Array<string>, eventRegistrationCount: number } | null> | null };
 
 export type EventRegistrationQueryVariables = Exact<{
   eventId?: InputMaybe<Scalars['ID']>;
@@ -673,6 +674,10 @@ export type OrgQuery = { __typename?: 'Query', org?: Array<{ __typename?: 'Org',
 
 export type TransactionQueryVariables = Exact<{
   orgID?: InputMaybe<Scalars['ID']>;
+  userID?: InputMaybe<Scalars['ID']>;
+  pagination?: InputMaybe<PaginationInputType>;
+  type?: InputMaybe<TransactionType>;
+  transactionId?: InputMaybe<Scalars['ID']>;
 }>;
 
 
@@ -693,7 +698,7 @@ export type UserQueryVariables = Exact<{
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', user?: Array<{ __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, ca: Array<string>, referredBy?: string | null, fests: Array<{ __typename?: 'Org', name: string, description: string }> } | null> | null };
+export type UserQuery = { __typename?: 'Query', user?: Array<{ __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, festID: Array<string>, ca: Array<string>, referredBy?: string | null, fests: Array<{ __typename?: 'Org', name: string, description: string }> } | null> | null };
 
 
 export const UpdateEventDocument = gql`
@@ -757,6 +762,7 @@ export const EventDocument = gql`
     status
     locationID
     orgID
+    eventRegistrationCount
   }
 }
     `;
@@ -904,8 +910,14 @@ export type OrgQueryHookResult = ReturnType<typeof useOrgQuery>;
 export type OrgLazyQueryHookResult = ReturnType<typeof useOrgLazyQuery>;
 export type OrgQueryResult = Apollo.QueryResult<OrgQuery, OrgQueryVariables>;
 export const TransactionDocument = gql`
-    query Transaction($orgID: ID) {
-  transaction(orgID: $orgID) {
+    query Transaction($orgID: ID, $userID: ID, $pagination: paginationInputType, $type: TransactionType, $transactionId: ID) {
+  transaction(
+    orgID: $orgID
+    userID: $userID
+    pagination: $pagination
+    type: $type
+    id: $transactionId
+  ) {
     amount
     transactionID
     type
@@ -932,6 +944,10 @@ export const TransactionDocument = gql`
  * const { data, loading, error } = useTransactionQuery({
  *   variables: {
  *      orgID: // value for 'orgID'
+ *      userID: // value for 'userID'
+ *      pagination: // value for 'pagination'
+ *      type: // value for 'type'
+ *      transactionId: // value for 'transactionId'
  *   },
  * });
  */
@@ -975,6 +991,7 @@ export const UserDocument = gql`
     mobile
     selfID
     rollNumber
+    festID
     fests {
       name
       description

@@ -12,10 +12,7 @@ import {
 
 import { format } from 'date-fns';
 
-import {
-  EventQuery,
-  useEventRegistrationQuery
-} from '../../graphql/graphql-types';
+import { EventQuery } from '../../graphql/graphql-types';
 import { Clock as ClockIcon } from '../../icons/clock';
 import { Users as UsersIcon } from '../../icons/users';
 import ProductEditModal from './product-edit-modal';
@@ -27,12 +24,6 @@ export interface IProductCard extends CardProps {
 
 export const ProductCard: React.FC<IProductCard> = ({ event, refetchEvents, ...rest }) => {
   const [openModal, setOpenModal] = useState(false);
-
-  const { data: eventRegistrationData } = useEventRegistrationQuery({
-    variables: {
-      eventId: event.id,
-    },
-  });
 
   return (
     <>
@@ -102,7 +93,7 @@ export const ProductCard: React.FC<IProductCard> = ({ event, refetchEvents, ...r
             >
               <UsersIcon color="action" />
               <Typography color="textSecondary" display="inline" sx={{ pl: 1 }} variant="body2">
-                Registrations: {eventRegistrationData?.eventRegistration.length}
+                Registrations: {event.eventRegistrationCount}
               </Typography>
             </Grid>
           </Grid>
@@ -114,7 +105,6 @@ export const ProductCard: React.FC<IProductCard> = ({ event, refetchEvents, ...r
         event={event}
         open={openModal}
         handleClose={() => setOpenModal(false)}
-        eventRegistration={eventRegistrationData?.eventRegistration}
       />
     </>
   );

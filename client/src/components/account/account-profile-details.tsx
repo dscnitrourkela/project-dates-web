@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react';
 
 import {
   Box,
@@ -12,6 +13,7 @@ import {
 } from '@mui/material';
 
 import { UserQuery } from '../../graphql/graphql-types';
+import { useOrgContext } from '../../store/contexts/org.context';
 
 const genderOptions = [
   {
@@ -32,6 +34,19 @@ export interface IAccountProfileDetails {
   user: UserQuery['user'][0];
 }
 
+const initialState = {
+  name: { value: '', disabled: false, full: true },
+  email: { value: '', disabled: false, full: false },
+  mobile: { value: '', disabled: false, full: false },
+  college: { value: '', disabled: false, full: false },
+  stream: { value: '', disabled: false, full: false },
+  rollNumber: { value: '', disabled: false, full: true },
+  city: { value: '', disabled: false, full: false },
+  state: { value: '', disabled: false, full: false },
+  gender: { value: '', disabled: false, full: false, type: 'select' },
+  referredBy: { value: '', disabled: false, full: false },
+};
+
 const getNitrStudentDetails = (isNitrStudent, key, user) => {
   const obj = {
     college: 'National Institute of Technology Rourkela',
@@ -41,38 +56,12 @@ const getNitrStudentDetails = (isNitrStudent, key, user) => {
   return isNitrStudent ? obj[key] : user[key];
 };
 
-export const AccountProfileDetails = ({ user }) => {
+export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({ user }) => {
+  const { org } = useOrgContext();
   const isNitrStudent = !!user.rollNumber;
+
   const [buttonDisabled, setDisabled] = useState(true);
-  const [values, setValues] = useState({
-    name: { value: user.name, disabled: false, full: true },
-
-    email: { value: user.email, disabled: true, full: false },
-    mobile: { value: user.mobile, disabled: true, full: false },
-
-    college: {
-      value: getNitrStudentDetails(isNitrStudent, 'college', user),
-      disabled: false,
-      full: false,
-    },
-    stream: { value: user.stream, disabled: false, full: false },
-
-    rollNumber: { value: user.rollNumber, disabled: true, full: true },
-
-    city: {
-      value: getNitrStudentDetails(isNitrStudent, 'city', user),
-      disabled: false,
-      full: false,
-    },
-    state: {
-      value: getNitrStudentDetails(isNitrStudent, 'state', user),
-      disabled: false,
-      full: false,
-    },
-
-    gender: { value: user.gender, disabled: false, full: false, type: 'select' },
-    referredBy: { value: user.referredBy, disabled: true, full: false },
-  });
+  const [values, setValues] = useState(initialState);
 
   const handleInputChange = (e, key) => {
     setDisabled(false);
@@ -84,6 +73,38 @@ export const AccountProfileDetails = ({ user }) => {
       },
     }));
   };
+
+  useEffect(() => {
+    setValues({
+      name: { value: user.name, disabled: false, full: true },
+
+      email: { value: user.email, disabled: true, full: false },
+      mobile: { value: user.mobile, disabled: true, full: false },
+
+      college: {
+        value: getNitrStudentDetails(isNitrStudent, 'college', user),
+        disabled: false,
+        full: false,
+      },
+      stream: { value: user.stream, disabled: false, full: false },
+
+      rollNumber: { value: user.rollNumber, disabled: true, full: true },
+
+      city: {
+        value: getNitrStudentDetails(isNitrStudent, 'city', user),
+        disabled: false,
+        full: false,
+      },
+      state: {
+        value: getNitrStudentDetails(isNitrStudent, 'state', user),
+        disabled: false,
+        full: false,
+      },
+
+      gender: { value: user.gender, disabled: false, full: false, type: 'select' },
+      referredBy: { value: user.referredBy, disabled: true, full: false },
+    });
+  }, [user]);
 
   return (
     <form autoComplete="off" noValidate>
@@ -137,10 +158,20 @@ export const AccountProfileDetails = ({ user }) => {
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'flex-end',
+            justifyContent: 'space-between',
             p: 2,
           }}
         >
+          <Button
+            color={user.festID.includes(org.festID) || user.rollNumber ? 'success' : 'error'}
+            variant="contained"
+          >
+            {user.festID.includes(org.festID) || user.rollNumber
+              ? 'User Registered for '
+              : 'User Not Registered for '}
+            {org.name}
+          </Button>
+
           <Button disabled={buttonDisabled} color="primary" variant="contained">
             Update details
           </Button>

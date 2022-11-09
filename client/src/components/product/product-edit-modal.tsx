@@ -40,7 +40,7 @@ export interface IProductEditModal {
   handleClose: () => void;
   event: EventQuery['event'][0];
   refetchEvents: () => void;
-  eventRegistration: EventRegistrationQuery['eventRegistration'];
+  eventRegistration?: EventRegistrationQuery['eventRegistration'];
 }
 
 const ProductEditModal: React.FC<IProductEditModal> = ({

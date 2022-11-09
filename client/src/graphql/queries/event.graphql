@@ -29,5 +29,6 @@ query Event(
     status
     locationID
     orgID
+    eventRegistrationCount
   }
 }
