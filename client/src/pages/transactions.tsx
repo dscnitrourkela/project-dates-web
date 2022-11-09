@@ -19,22 +19,23 @@ const Transactions = () => {
 
   const renderUsers = () => {
     if (loading) return <>Loading...</>;
-    if (error) return <>Error...</>;
+    // if (error) return <>Error...</>;
 
     return (
       <MUIDataTable
         title={'User List'}
-        data={data.transaction.map((transaction, index) => ({
+        data={data?.transaction.map((transaction, index) => ({
           ...transaction,
           ...transaction.user,
           '#': index,
         }))}
         columns={[
           '#',
-          ...Object.keys(data.transaction[0] || {}),
-          ...Object.keys(data.transaction[0]?.user || {}),
+          ...Object.keys(data?.transaction[0] || {}),
+          ...Object.keys(data?.transaction[0]?.user || {}),
         ]}
         options={{
+          count: 3000,
           filter: true,
           sort: true,
           search: true,

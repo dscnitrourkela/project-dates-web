@@ -17,8 +17,7 @@ import {
   ListItemIcon,
   ListItemText,
   SvgIcon,
-  TextField,
-  Typography
+  TextField
 } from '@mui/material';
 
 import { Search as SearchIcon } from 'icons/search';
@@ -88,20 +87,6 @@ export const NewCustomerListToolbar = () => {
 
   return (
     <Box>
-      <Box
-        sx={{
-          alignItems: 'center',
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          m: -1,
-        }}
-      >
-        <Typography sx={{ m: 1 }} variant="h4">
-          Registered Users
-        </Typography>
-      </Box>
-
       <Box sx={{ mt: 3 }}>
         <Card>
           <CardContent>

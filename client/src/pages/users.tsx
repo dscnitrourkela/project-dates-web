@@ -1,50 +1,46 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
 
-import { Box, Container } from '@mui/material';
+import {
+  Box,
+  Container,
+  Tab,
+  Tabs,
+  TextField,
+  Typography
+} from '@mui/material';
 
 import Head from 'next/head';
 
 import { CustomerListResults } from '../components/customer/customer-list-results';
-import { CustomerListToolbar } from '../components/customer/customer-list-toolbar';
 import { NewCustomerListToolbar } from '../components/customer/new-customer-list-toolbar';
 import { DashboardLayout } from '../components/dashboard-layout';
 import { useUserQuery } from '../graphql/graphql-types';
 import { useOrgContext } from '../store/contexts/org.context';
 
+const STAGES = {
+  SEARCH: 'Search User',
+  LIST: 'List User',
+};
+
 const Page = () => {
-  const [showNitrStudents, setShowNitrStudents] = useState(true);
+  const [stage, setStage] = useState(STAGES.SEARCH);
+
   const { org } = useOrgContext();
   const {
     loading: userLoading,
     error: userError,
     data: userData,
-    refetch,
     fetchMore,
   } = useUserQuery({
     variables: {
       festID: org?.festID,
-      isNitrStudent: showNitrStudents,
       pagination: {
         skip: 0,
         take: 10,
       },
     },
   });
-
-  // console.log(userData);
-
-  const updateUserList = (param: boolean) => {
-    setShowNitrStudents(param);
-    refetch({
-      festID: org?.festID,
-      isNitrStudent: param,
-      pagination: {
-        skip: 0,
-        take: 100,
-      },
-    });
-  };
 
   const onPageChange = (pageNumber: number, rowsPerPage: number) => {
     fetchMore({
@@ -54,6 +50,17 @@ const Page = () => {
           skip: pageNumber * rowsPerPage,
           take: rowsPerPage,
         },
+      },
+      updateQuery: (prev, { fetchMoreResult, ...rest }) => {
+        if (!fetchMoreResult) return prev;
+
+        return {
+          ...fetchMoreResult,
+          launches: {
+            ...fetchMoreResult.user,
+            launches: [...prev.user, ...fetchMoreResult.user],
+          },
+        };
       },
     });
   };
@@ -78,12 +85,23 @@ const Page = () => {
         }}
       >
         <Container maxWidth={false}>
-          <NewCustomerListToolbar />
-          {/* <CustomerListToolbar
-            showNitrStudents={showNitrStudents}
-            setShowNitrStudents={updateUserList}
-          />
-          <Box sx={{ mt: 3 }}>{renderUsers()}</Box> */}
+          <Typography sx={{ m: 1 }} variant="h4">
+            Registered Users
+          </Typography>
+          <Tabs
+            value={stage}
+            sx={{ marginBottom: '1rem' }}
+            onChange={(e, newStage) => setStage(newStage)}
+          >
+            <Tab value={STAGES.SEARCH} label="Search User" />
+            <Tab value={STAGES.LIST} label="User List" />
+          </Tabs>
+
+          {stage === STAGES.SEARCH ? (
+            <NewCustomerListToolbar />
+          ) : (
+            <Box sx={{ mt: 3 }}>{renderUsers()}</Box>
+          )}
         </Container>
       </Box>
     </>

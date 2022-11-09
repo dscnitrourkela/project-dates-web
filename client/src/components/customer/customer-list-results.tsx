@@ -20,7 +20,7 @@ export const CustomerListResults: React.FC<ICustomerListResults> = ({
   ...rest
 }) => {
   const users = userData.user;
-  const [pageNumber, setPageNumber] = useState<number | undefined>(1);
+  const [pageNumber, setPageNumber] = useState<number | undefined>(0);
   const [rowNumber, setRowNumber] = useState(10);
 
   return (
@@ -29,7 +29,10 @@ export const CustomerListResults: React.FC<ICustomerListResults> = ({
         <Box sx={{ minWidth: 1050, overflowX: 'auto' }}>
           <MUIDataTable
             title={'User List'}
-            data={users.map((user, index) => ({ ...user, '#': index + 1 }))}
+            data={users.map((user, index) => ({
+              ...user,
+              '#': pageNumber * rowNumber + index + 1,
+            }))}
             columns={[
               '#',
               ...Object.keys(users[0]).filter(
@@ -40,25 +43,24 @@ export const CustomerListResults: React.FC<ICustomerListResults> = ({
               ),
             ]}
             options={{
+              count: 7000,
               filter: true,
               sort: true,
-              search: true,
-              filterType: 'dropdown',
-              rowsPerPage: rowNumber,
-              page: pageNumber,
               serverSide: true,
+              search: false,
+              pagination: true,
+              filterType: 'dropdown',
               selectableRows: 'none',
+              rowsPerPage: 10,
+              rowsPerPageOptions: [10],
               onChangePage: (currentPageNumber: number) => {
-                console.log(rowNumber, currentPageNumber);
                 onPageChange(currentPageNumber, rowNumber);
                 setPageNumber(currentPageNumber);
               },
               onChangeRowsPerPage: (currentRowNumber: number) => {
-                console.log(currentRowNumber, pageNumber);
                 onPageChange(pageNumber, rowNumber);
                 setRowNumber(currentRowNumber);
               },
-              pagination: true,
             }}
           />
         </Box>
