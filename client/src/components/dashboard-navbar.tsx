@@ -60,6 +60,7 @@ export const DashboardNavbar: React.FC<IDashboardNavbar> = ({ onSidebarOpen, ...
           const { data } = await getOrgs();
           setOrgs(data.org);
           setOrg(data.org[0]);
+          return;
         }
 
         const userOrgs = [];
@@ -145,7 +146,7 @@ export const DashboardNavbar: React.FC<IDashboardNavbar> = ({ onSidebarOpen, ...
                 width: 40,
                 ml: 1,
               }}
-              src={user.photoURL}
+              src={user?.firebase.photoURL}
             >
               <UserCircleIcon fontSize="small" />
             </Avatar>
@@ -156,7 +157,7 @@ export const DashboardNavbar: React.FC<IDashboardNavbar> = ({ onSidebarOpen, ...
         anchorEl={settingsRef.current}
         open={openAccountPopover}
         onClose={() => setOpenAccountPopover(false)}
-        name={user?.displayName}
+        name={user?.firebase.displayName}
       />
     </>
   );

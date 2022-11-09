@@ -11,123 +11,129 @@ import {
   TextField
 } from '@mui/material';
 
-const states = [
+import { UserQuery } from '../../graphql/graphql-types';
+
+const genderOptions = [
   {
-    value: 'alabama',
-    label: 'Alabama',
+    value: 'MALE',
+    label: 'Male',
   },
   {
-    value: 'new-york',
-    label: 'New York',
+    value: 'FEMALE',
+    label: 'Female',
   },
   {
-    value: 'san-francisco',
-    label: 'San Francisco',
+    value: 'OTHERS',
+    label: 'Others',
   },
 ];
 
-export const AccountProfileDetails = (props) => {
+export interface IAccountProfileDetails {
+  user: UserQuery['user'][0];
+}
+
+const getNitrStudentDetails = (isNitrStudent, key, user) => {
+  const obj = {
+    college: 'National Institute of Technology Rourkela',
+    city: 'Rourkela',
+    state: 'Odisha',
+  };
+  return isNitrStudent ? obj[key] : user[key];
+};
+
+export const AccountProfileDetails = ({ user }) => {
+  const isNitrStudent = !!user.rollNumber;
+  const [buttonDisabled, setDisabled] = useState(true);
   const [values, setValues] = useState({
-    firstName: 'Katarina',
-    lastName: 'Smith',
-    email: 'demo@devias.io',
-    phone: '',
-    state: 'Alabama',
-    country: 'USA',
+    name: { value: user.name, disabled: false, full: true },
+
+    email: { value: user.email, disabled: true, full: false },
+    mobile: { value: user.mobile, disabled: true, full: false },
+
+    college: {
+      value: getNitrStudentDetails(isNitrStudent, 'college', user),
+      disabled: false,
+      full: false,
+    },
+    stream: { value: user.stream, disabled: false, full: false },
+
+    rollNumber: { value: user.rollNumber, disabled: true, full: true },
+
+    city: {
+      value: getNitrStudentDetails(isNitrStudent, 'city', user),
+      disabled: false,
+      full: false,
+    },
+    state: {
+      value: getNitrStudentDetails(isNitrStudent, 'state', user),
+      disabled: false,
+      full: false,
+    },
+
+    gender: { value: user.gender, disabled: false, full: false, type: 'select' },
+    referredBy: { value: user.referredBy, disabled: true, full: false },
   });
 
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
+  const handleInputChange = (e, key) => {
+    setDisabled(false);
+    setValues((current) => ({
+      ...current,
+      [key]: {
+        ...current[key],
+        value: e.target.value,
+      },
+    }));
   };
 
   return (
-    <form autoComplete="off" noValidate {...props}>
+    <form autoComplete="off" noValidate>
       <Card>
-        <CardHeader subheader="The information can be edited" title="Profile" />
+        <CardHeader
+          subheader="Some of the information can be updated. Not all information is updatable."
+          title="Profile"
+        />
         <Divider />
         <CardContent>
           <Grid container spacing={3}>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                helperText="Please specify the first name"
-                label="First name"
-                name="firstName"
-                onChange={handleChange}
-                required
-                value={values.firstName}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Last name"
-                name="lastName"
-                onChange={handleChange}
-                required
-                value={values.lastName}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Email Address"
-                name="email"
-                onChange={handleChange}
-                required
-                value={values.email}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Phone Number"
-                name="phone"
-                onChange={handleChange}
-                type="number"
-                value={values.phone}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Country"
-                name="country"
-                onChange={handleChange}
-                required
-                value={values.country}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Select State"
-                name="state"
-                onChange={handleChange}
-                required
-                select
-                SelectProps={{ native: true }}
-                value={values.state}
-                variant="outlined"
-              >
-                {states.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </TextField>
-            </Grid>
+            {Object.keys(values).map((key) => {
+              const { full, value, disabled, type } = values[key];
+
+              return (
+                <Grid key={key} item md={full ? 12 : 6} xs={12}>
+                  {type === 'select' ? (
+                    <TextField
+                      fullWidth
+                      label={`${key[0].toUpperCase()}${key.substring(1)}`}
+                      value={value}
+                      variant="outlined"
+                      onChange={(e) => handleInputChange(e, key)}
+                      disabled={disabled}
+                      select
+                      SelectProps={{ native: true }}
+                    >
+                      {genderOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </TextField>
+                  ) : (
+                    <TextField
+                      fullWidth
+                      label={`${key[0].toUpperCase()}${key.substring(1)}`}
+                      value={value}
+                      variant="outlined"
+                      onChange={(e) => handleInputChange(e, key)}
+                      disabled={disabled}
+                    />
+                  )}
+                </Grid>
+              );
+            })}
           </Grid>
         </CardContent>
         <Divider />
+
         <Box
           sx={{
             display: 'flex',
@@ -135,8 +141,8 @@ export const AccountProfileDetails = (props) => {
             p: 2,
           }}
         >
-          <Button color="primary" variant="contained">
-            Save details
+          <Button disabled={buttonDisabled} color="primary" variant="contained">
+            Update details
           </Button>
         </Box>
       </Card>

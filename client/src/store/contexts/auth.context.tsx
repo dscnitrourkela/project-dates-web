@@ -49,9 +49,8 @@ const provider = new GoogleAuthProvider();
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => {
   const { query } = useRouter();
   const [state, dispatch] = useReducer(authReducer, authInitialState);
-  const [getUser, { loading: userLoading, error: userError, data: userData }] = useUserLazyQuery();
 
-  if (userError) toast.error(userError.message);
+  const [getUser] = useUserLazyQuery();
 
   const setLoading = (isLoading = true) =>
     dispatch({
@@ -62,19 +61,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => 
   const signIn = async () => {
     try {
       setLoading();
-      const result = await signInWithPopup(auth, provider);
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const { accessToken } = credential;
-      const { user } = result;
-      dispatch({
-        type: AUTH_ACTION_TYPE.SIGN_IN,
-        payload: {
-          ...user,
-          accessToken,
-        },
-      });
+      await signInWithPopup(auth, provider);
     } catch (error) {
-      setLoading(false);
       const {
         code: errorCode,
         message: errorMessage,
@@ -84,6 +72,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => 
       console.error(errorCode, errorMessage, email, credential);
       toast.error(errorMessage);
     }
+
+    setLoading(false);
   };
 
   const signOut = async () => {
@@ -104,19 +94,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => 
     onAuthStateChanged(auth, async (user) => {
       try {
         if (user) {
-          setLoading();
-
           const accessToken = await user.getIdToken();
           GraphQLClient.setLink(getApolloLink(accessToken));
           console.log(accessToken, user.uid);
 
-          await getUser({
+          const {
+            loading: userLoading,
+            error: userError,
+            data: userData,
+          } = await getUser({
             variables: {
               uid: user.uid,
             },
           });
 
-          const { data: permissions } = await avenueApi.get('/auth', {
+          const { data: userPermissions } = await avenueApi.get('/auth', {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
@@ -126,10 +118,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => 
             type: AUTH_ACTION_TYPE.SIGN_IN,
             payload: {
               accessToken,
-              ...user,
-              ...(!userLoading && userData?.user[0] ? userData.user[0] : {}),
-              permissions: permissions.permissions,
-              userID: permissions.user.user_id,
+              firebase: user,
+              uid: user.uid,
+              permissions: userPermissions.permissions,
+              userID: userData.user[0].id,
+              ...userData.user[0],
             },
           });
           const { continueUrl } = query;
@@ -149,7 +142,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => 
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userData, userLoading]);
+  }, []);
 
   return (
     <AuthContext.Provider

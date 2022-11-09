@@ -6,7 +6,8 @@ export enum AUTH_ACTION_TYPE {
   SIGN_OUT = 'SIGN_OUT',
 }
 
-export interface IUser extends User {
+export interface IUser {
+  firebase: User;
   name?: string;
   rollNumber?: string;
   accessToken: string;

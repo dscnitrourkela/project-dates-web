@@ -7,6 +7,7 @@ import {
   Card,
   CardActions,
   CardContent,
+  CardProps,
   Divider,
   Typography
 } from '@mui/material';
@@ -20,8 +21,13 @@ const user = {
   timezone: 'GTM-7',
 };
 
-export const AccountProfile = (props) => (
-  <Card {...props}>
+export interface IAccountProfile extends CardProps {
+  img: string;
+  name: string;
+}
+
+export const AccountProfile: React.FC<IAccountProfile> = ({ img, name, ...rest }) => (
+  <Card {...rest}>
     <CardContent>
       <Box
         sx={{
@@ -31,7 +37,7 @@ export const AccountProfile = (props) => (
         }}
       >
         <Avatar
-          src={user.avatar}
+          src={img}
           sx={{
             height: 64,
             mb: 2,
@@ -39,21 +45,21 @@ export const AccountProfile = (props) => (
           }}
         />
         <Typography color="textPrimary" gutterBottom variant="h5">
-          {user.name}
+          {name}
         </Typography>
-        <Typography color="textSecondary" variant="body2">
+        {/* <Typography color="textSecondary" variant="body2">
           {`${user.city} ${user.country}`}
         </Typography>
         <Typography color="textSecondary" variant="body2">
           {user.timezone}
-        </Typography>
+        </Typography> */}
       </Box>
     </CardContent>
     <Divider />
-    <CardActions>
+    {/* <CardActions>
       <Button color="primary" fullWidth variant="text">
         Upload picture
       </Button>
-    </CardActions>
+    </CardActions> */}
   </Card>
 );
