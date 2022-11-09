@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Box, Container } from '@mui/material';
 
@@ -11,38 +11,85 @@ import { useOrgContext } from '../store/contexts/org.context';
 
 const Transactions = () => {
   const { org } = useOrgContext();
-  const { loading, error, data } = useTransactionQuery({
+  const [pageNumber, setPageNumber] = useState<number | undefined>(0);
+  const [rowNumber, setRowNumber] = useState(10);
+  const { loading, error, data, fetchMore } = useTransactionQuery({
     variables: {
       orgID: org?.id,
+      pagination: {
+        skip: 0,
+        take: 10,
+      },
     },
   });
 
+  console.log(data);
+
+  const onPageChange = (pN: number, rPP: number) => {
+    fetchMore({
+      variables: {
+        orgID: org?.id,
+        pagination: {
+          skip: pN * rPP,
+          take: rPP,
+        },
+      },
+      updateQuery: (prev, { fetchMoreResult, ...rest }) => {
+        if (!fetchMoreResult) return prev;
+
+        return {
+          ...fetchMoreResult,
+          launches: {
+            ...fetchMoreResult.transaction,
+            launches: [...prev.transaction, ...fetchMoreResult.transaction],
+          },
+        };
+      },
+    });
+  };
+
   const renderUsers = () => {
     if (loading) return <>Loading...</>;
-    // if (error) return <>Error...</>;
+    if (error) return <>Error...</>;
 
     return (
-      <MUIDataTable
-        title={'User List'}
-        data={data?.transaction.map((transaction, index) => ({
-          ...transaction,
-          ...transaction.user,
-          '#': index,
-        }))}
-        columns={[
-          '#',
-          ...Object.keys(data?.transaction[0] || {}),
-          ...Object.keys(data?.transaction[0]?.user || {}),
-        ]}
-        options={{
-          count: 3000,
-          filter: true,
-          sort: true,
-          search: true,
-          filterType: 'dropdown',
-          selectableRows: false,
-        }}
-      />
+      data && (
+        <MUIDataTable
+          title={'User List'}
+          data={data.transaction.map((transaction, index) => ({
+            ...transaction,
+            ...transaction.user,
+            '#': pageNumber * rowNumber + index + 1,
+          }))}
+          columns={[
+            '#',
+            ...Object.keys(data.transaction[0]).filter(
+              (key) => !['__typename', 'id', 'user'].includes(key),
+            ),
+            ...Object.keys(data.transaction[0].user).filter((key) => !['__typename'].includes(key)),
+          ]}
+          options={{
+            count: 7000,
+            filter: true,
+            sort: true,
+            serverSide: false,
+            search: false,
+            pagination: true,
+            selectableRows: 'none',
+            filterType: 'dropdown',
+            rowsPerPage: 10,
+            rowsPerPageOptions: [10],
+            onChangePage: (currentPageNumber: number) => {
+              onPageChange(currentPageNumber, rowNumber);
+              setPageNumber(currentPageNumber);
+            },
+            onChangeRowsPerPage: (currentRowNumber: number) => {
+              onPageChange(pageNumber, rowNumber);
+              setRowNumber(currentRowNumber);
+            },
+          }}
+        />
+      )
     );
   };
 

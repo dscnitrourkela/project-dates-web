@@ -7,8 +7,6 @@ import MUIDataTable from 'mui-datatables';
 
 import { UserQuery } from '../../graphql/graphql-types';
 
-// import { getInitials } from '../../utils/get-initials';
-
 interface ICustomerListResults extends React.PropsWithChildren {
   users: UserQuery;
   onPageChange: (pageNumber: number, rowsPerPage: number) => void;
