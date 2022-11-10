@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react';
 
 import {
   Box,
@@ -11,134 +12,177 @@ import {
   TextField
 } from '@mui/material';
 
-const states = [
+import { UserQuery } from '../../graphql/graphql-types';
+import { useOrgContext } from '../../store/contexts/org.context';
+
+const genderOptions = [
   {
-    value: 'alabama',
-    label: 'Alabama',
+    value: 'MALE',
+    label: 'Male',
   },
   {
-    value: 'new-york',
-    label: 'New York',
+    value: 'FEMALE',
+    label: 'Female',
   },
   {
-    value: 'san-francisco',
-    label: 'San Francisco',
+    value: 'OTHERS',
+    label: 'Others',
   },
 ];
 
-export const AccountProfileDetails = (props) => {
-  const [values, setValues] = useState({
-    firstName: 'Katarina',
-    lastName: 'Smith',
-    email: 'demo@devias.io',
-    phone: '',
-    state: 'Alabama',
-    country: 'USA',
-  });
+export interface IAccountProfileDetails {
+  user: UserQuery['user'][0];
+  disableAll?: boolean;
+}
 
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
+const initialState = {
+  name: { value: '', disabled: false, full: true },
+  email: { value: '', disabled: false, full: false },
+  mobile: { value: '', disabled: false, full: false },
+  college: { value: '', disabled: false, full: false },
+  stream: { value: '', disabled: false, full: false },
+  rollNumber: { value: '', disabled: false, full: true },
+  city: { value: '', disabled: false, full: false },
+  state: { value: '', disabled: false, full: false },
+  gender: { value: '', disabled: false, full: false, type: 'select' },
+  referredBy: { value: '', disabled: false, full: false },
+};
+
+const getNitrStudentDetails = (isNitrStudent, key, user) => {
+  const obj = {
+    college: 'National Institute of Technology Rourkela',
+    city: 'Rourkela',
+    state: 'Odisha',
+  };
+  return isNitrStudent ? obj[key] : user[key];
+};
+
+export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({ user, disableAll }) => {
+  const { org } = useOrgContext();
+  const isNitrStudent = !!user.rollNumber;
+
+  const [buttonDisabled, setDisabled] = useState(true);
+  const [values, setValues] = useState(initialState);
+
+  const handleInputChange = (e, key) => {
+    setDisabled(false);
+    setValues((current) => ({
+      ...current,
+      [key]: {
+        ...current[key],
+        value: e.target.value,
+      },
+    }));
   };
 
+  useEffect(() => {
+    setValues({
+      name: { value: user.name, disabled: disableAll || false, full: true },
+
+      email: { value: user.email, disabled: disableAll || true, full: false },
+      mobile: { value: user.mobile, disabled: disableAll || true, full: false },
+
+      college: {
+        value: getNitrStudentDetails(isNitrStudent, 'college', user),
+        disabled: disableAll || false,
+        full: false,
+      },
+      stream: { value: user.stream, disabled: disableAll || false, full: false },
+
+      rollNumber: { value: user.rollNumber, disabled: disableAll || true, full: true },
+
+      city: {
+        value: getNitrStudentDetails(isNitrStudent, 'city', user),
+        disabled: disableAll || false,
+        full: false,
+      },
+      state: {
+        value: getNitrStudentDetails(isNitrStudent, 'state', user),
+        disabled: disableAll || false,
+        full: false,
+      },
+
+      gender: { value: user.gender, disabled: disableAll || false, full: false, type: 'select' },
+      referredBy: { value: user.referredBy, disabled: disableAll || true, full: false },
+    });
+  }, [user]);
+
   return (
-    <form autoComplete="off" noValidate {...props}>
+    <form autoComplete="off" noValidate>
       <Card>
-        <CardHeader subheader="The information can be edited" title="Profile" />
-        <Divider />
+        {!disableAll && (
+          <>
+            <CardHeader
+              subheader="Some of the information can be updated. Not all information is updatable."
+              title="Profile"
+            />
+            <Divider />
+          </>
+        )}
         <CardContent>
           <Grid container spacing={3}>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                helperText="Please specify the first name"
-                label="First name"
-                name="firstName"
-                onChange={handleChange}
-                required
-                value={values.firstName}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Last name"
-                name="lastName"
-                onChange={handleChange}
-                required
-                value={values.lastName}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Email Address"
-                name="email"
-                onChange={handleChange}
-                required
-                value={values.email}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Phone Number"
-                name="phone"
-                onChange={handleChange}
-                type="number"
-                value={values.phone}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Country"
-                name="country"
-                onChange={handleChange}
-                required
-                value={values.country}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Select State"
-                name="state"
-                onChange={handleChange}
-                required
-                select
-                SelectProps={{ native: true }}
-                value={values.state}
-                variant="outlined"
-              >
-                {states.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </TextField>
-            </Grid>
+            {Object.keys(values).map((key) => {
+              const { full, value, disabled, type } = values[key];
+
+              return (
+                <Grid key={key} item md={full ? 12 : 6} xs={12}>
+                  {type === 'select' ? (
+                    <TextField
+                      fullWidth
+                      label={`${key[0].toUpperCase()}${key.substring(1)}`}
+                      value={value}
+                      variant="outlined"
+                      onChange={(e) => handleInputChange(e, key)}
+                      disabled={disabled}
+                      select
+                      SelectProps={{ native: true }}
+                    >
+                      {genderOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </TextField>
+                  ) : (
+                    <TextField
+                      fullWidth
+                      label={`${key[0].toUpperCase()}${key.substring(1)}`}
+                      value={value}
+                      variant="outlined"
+                      onChange={(e) => handleInputChange(e, key)}
+                      disabled={disabled}
+                    />
+                  )}
+                </Grid>
+              );
+            })}
           </Grid>
         </CardContent>
         <Divider />
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            p: 2,
-          }}
-        >
-          <Button color="primary" variant="contained">
-            Save details
-          </Button>
-        </Box>
+
+        {!disableAll && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              p: 2,
+            }}
+          >
+            <Button
+              color={user.festID.includes(org.festID) || user.rollNumber ? 'success' : 'error'}
+              variant="contained"
+            >
+              {user.festID.includes(org.festID) || user.rollNumber
+                ? 'User Registered for '
+                : 'User Not Registered for '}
+              {org.name}
+            </Button>
+
+            <Button disabled={buttonDisabled} color="primary" variant="contained">
+              Update details
+            </Button>
+          </Box>
+        )}
       </Card>
     </form>
   );

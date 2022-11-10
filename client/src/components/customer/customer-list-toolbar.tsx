@@ -2,21 +2,22 @@ import React from 'react';
 
 import {
   Box,
+  BoxProps,
   Button,
-  Card,
-  CardContent,
-  InputAdornment,
-  SvgIcon,
-  TextField,
   Typography
 } from '@mui/material';
 
-import { Download as DownloadIcon } from '../../icons/download';
-import { Search as SearchIcon } from '../../icons/search';
-import { Upload as UploadIcon } from '../../icons/upload';
+export interface ICustomerListToolbar extends BoxProps {
+  setShowNitrStudents: (param: boolean) => void;
+  showNitrStudents: boolean;
+}
 
-export const CustomerListToolbar = (props) => (
-  <Box {...props}>
+export const CustomerListToolbar: React.FC<ICustomerListToolbar> = ({
+  setShowNitrStudents,
+  showNitrStudents,
+  ...rest
+}) => (
+  <Box {...rest}>
     <Box
       sx={{
         alignItems: 'center',
@@ -27,41 +28,27 @@ export const CustomerListToolbar = (props) => (
       }}
     >
       <Typography sx={{ m: 1 }} variant="h4">
-        Customers
+        Registered Users for Innovision 2022
       </Typography>
       <Box sx={{ m: 1 }}>
-        <Button startIcon={<UploadIcon fontSize="small" />} sx={{ mr: 1 }}>
-          Import
+        <Button
+          disabled={showNitrStudents}
+          onClick={() => setShowNitrStudents(true)}
+          sx={{ mr: 1 }}
+        >
+          Show NITR Students
         </Button>
-        <Button startIcon={<DownloadIcon fontSize="small" />} sx={{ mr: 1 }}>
-          Export
+        <Button
+          disabled={!showNitrStudents}
+          onClick={() => setShowNitrStudents(false)}
+          sx={{ mr: 1 }}
+        >
+          Show Non NITR Students
         </Button>
-        <Button color="primary" variant="contained">
+        {/* <Button color="primary" variant="contained">
           Add Customers
-        </Button>
+        </Button> */}
       </Box>
-    </Box>
-    <Box sx={{ mt: 3 }}>
-      <Card>
-        <CardContent>
-          <Box sx={{ maxWidth: 500 }}>
-            <TextField
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SvgIcon color="action" fontSize="small">
-                      <SearchIcon />
-                    </SvgIcon>
-                  </InputAdornment>
-                ),
-              }}
-              placeholder="Search customer"
-              variant="outlined"
-            />
-          </Box>
-        </CardContent>
-      </Card>
     </Box>
   </Box>
 );

@@ -35,7 +35,8 @@
     "src/types/**/*.d.ts",
     "src/**/*.jsx",
     "src/**/*.js",
-    "./*.d.ts"
+    "./*.d.ts",
+    "codegen.js"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "codegen.ts"]
 }

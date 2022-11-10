@@ -1,0 +1,51 @@
+query User(
+  $festID: [String!]
+  $id: ID
+  $uid: ID
+  $email: String
+  $city: String
+  $state: String
+  $college: String
+  $stream: String
+  $referredBy: String
+  $isNitrStudent: Boolean
+  $pagination: paginationInputType
+  $orgID: ID
+) {
+  user(
+    festID: $festID
+    id: $id
+    uid: $uid
+    email: $email
+    city: $city
+    state: $state
+    college: $college
+    stream: $stream
+    referredBy: $referredBy
+    isNitrStudent: $isNitrStudent
+    pagination: $pagination
+    orgID: $orgID
+  ) {
+    email
+    id
+    uid
+    name
+    photo
+    gender
+    dob
+    state
+    city
+    college
+    stream
+    mobile
+    selfID
+    rollNumber
+    festID
+    fests {
+      name
+      description
+    }
+    ca
+    referredBy
+  }
+}

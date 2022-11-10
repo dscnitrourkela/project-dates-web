@@ -1,0 +1,25 @@
+query Transaction(
+  $orgID: ID
+  $userID: ID
+  $pagination: paginationInputType
+  $type: TransactionType
+  $transactionId: ID
+) {
+  transaction(
+    orgID: $orgID
+    userID: $userID
+    pagination: $pagination
+    type: $type
+    id: $transactionId
+  ) {
+    amount
+    transactionID
+    type
+    timestamp
+    user {
+      name
+      email
+      mobile
+    }
+  }
+}

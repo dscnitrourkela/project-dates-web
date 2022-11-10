@@ -1,0 +1,22 @@
+query EventRegistration($eventId: ID, $userId: ID, $eventRegistrationId: ID, $orgId: ID) {
+  eventRegistration(eventID: $eventId, userID: $userId, id: $eventRegistrationId, orgID: $orgId) {
+    user {
+      email
+      id
+      uid
+      name
+      photo
+      gender
+      dob
+      state
+      city
+      college
+      stream
+      mobile
+      selfID
+      rollNumber
+      ca
+      referredBy
+    }
+  }
+}

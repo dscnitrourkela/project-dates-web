@@ -1,65 +1,76 @@
 import React, { useEffect } from 'react';
 
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { Box, Button, Divider, Drawer, Typography, useMediaQuery } from '@mui/material';
+import {
+  Box,
+  Divider,
+  Drawer,
+  Typography,
+  useMediaQuery
+} from '@mui/material';
 import { Theme } from '@mui/material/styles';
 
 import { ChartBar as ChartBarIcon } from 'icons/chart-bar';
-import { Cog as CogIcon } from 'icons/cog';
+// import { Cog as CogIcon } from 'icons/cog';
 import { Lock as LockIcon } from 'icons/lock';
 import { Selector as SelectorIcon } from 'icons/selector';
 import { ShoppingBag as ShoppingBagIcon } from 'icons/shopping-bag';
 import { User as UserIcon } from 'icons/user';
-import { UserAdd as UserAddIcon } from 'icons/user-add';
+// import { UserAdd as UserAddIcon } from 'icons/user-add';
 import { Users as UsersIcon } from 'icons/users';
-import { XCircle as XCircleIcon } from 'icons/x-circle';
+// import { XCircle as XCircleIcon } from 'icons/x-circle';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
+import { useAuthContext } from '../store/contexts';
 import { Logo } from './logo';
 import { NavItem } from './nav-item';
 
-const items = [
+const items = (permissions) => [
   {
-    href: '/',
+    href: '/dashboard',
     icon: <ChartBarIcon fontSize="small" />,
     title: 'Dashboard',
+    show: true,
   },
   {
-    href: '/customers',
+    href: '/users',
     icon: <UsersIcon fontSize="small" />,
-    title: 'Customers',
+    title: 'Users',
+    show: true,
   },
   {
-    href: '/products',
+    href: '/events',
     icon: <ShoppingBagIcon fontSize="small" />,
-    title: 'Products',
+    title: 'Events',
+    show: true,
   },
   {
-    href: '/account',
+    href: '/transactions',
     icon: <UserIcon fontSize="small" />,
-    title: 'Account',
+    title: 'Transactions',
+    show: true,
   },
   {
-    href: '/settings',
-    icon: <CogIcon fontSize="small" />,
-    title: 'Settings',
-  },
-  {
-    href: '/login',
+    href: '/permissions',
     icon: <LockIcon fontSize="small" />,
-    title: 'Login',
+    title: 'Permissions',
+    show: permissions?.superAdmin,
   },
-  {
-    href: '/register',
-    icon: <UserAddIcon fontSize="small" />,
-    title: 'Register',
-  },
-  {
-    href: '/404',
-    icon: <XCircleIcon fontSize="small" />,
-    title: 'Error',
-  },
+  // {
+  //   href: '/developer-info',
+  //   icon: <UserAddIcon fontSize="small" />,
+  //   title: 'Developer Info',
+  // },
+  // {
+  //   href: '/locations',
+  //   icon: <XCircleIcon fontSize="small" />,
+  //   title: 'Locations',
+  // },
+  // {
+  //   href: '/story',
+  //   icon: <XCircleIcon fontSize="small" />,
+  //   title: 'Story',
+  // },
 ];
 
 export interface IDashboardSidebar {
@@ -68,6 +79,7 @@ export interface IDashboardSidebar {
 }
 
 export const DashboardSidebar: React.FC<IDashboardSidebar> = (props) => {
+  const { user } = useAuthContext();
   const { open, onClose } = props;
   const router = useRouter();
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'), {
@@ -147,7 +159,7 @@ export const DashboardSidebar: React.FC<IDashboardSidebar> = (props) => {
           }}
         />
         <Box sx={{ flexGrow: 1 }}>
-          {items.map((item) => (
+          {items(user?.permissions).map((item) => (
             <NavItem key={item.title} icon={item.icon} href={item.href} title={item.title} />
           ))}
         </Box>
@@ -177,18 +189,6 @@ export const DashboardSidebar: React.FC<IDashboardSidebar> = (props) => {
           >
             <img alt="Go to pro" src="/static/images/sidebar_pro.png" />
           </Box>
-          <NextLink href="https://material-kit-pro-react.devias.io/" passHref>
-            <Button
-              color="secondary"
-              component="a"
-              endIcon={<OpenInNewIcon />}
-              fullWidth
-              sx={{ mt: 2 }}
-              variant="contained"
-            >
-              Pro Live Preview
-            </Button>
-          </NextLink>
         </Box>
       </Box>
     </>

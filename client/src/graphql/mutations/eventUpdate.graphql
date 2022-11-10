@@ -1,0 +1,6 @@
+mutation UpdateEvent($updateEventId: ID!, $orgId: ID!, $event: EventUpdateInputType!) {
+  updateEvent(id: $updateEventId, orgID: $orgId, event: $event) {
+    name
+    description
+  }
+}

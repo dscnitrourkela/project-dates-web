@@ -1,5 +1,8 @@
-import React, { Fragment } from 'react';
+import 'react-toastify/dist/ReactToastify.css';
+
+import React from 'react';
 import { CacheProvider } from '@emotion/react';
+import { ToastContainer } from 'react-toastify';
 
 import { EmotionCache } from '@emotion/cache';
 import { CssBaseline } from '@mui/material';
@@ -8,8 +11,10 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import Head from 'next/head';
-import { AuthConsumer, AuthProvider } from 'store/contexts';
+import { AuthProvider } from 'store/contexts';
+import { OrgProvider } from 'store/contexts/org.context';
 
+import ApolloWrapper from '../lib/apollo';
 import { theme } from '../theme';
 import { createEmotionCache } from '../utils/create-emotion-cache';
 import { registerChartJs } from '../utils/register-chart-js';
@@ -30,22 +35,28 @@ const App: React.FC<IAppProps> = (props) => {
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
-    <CacheProvider value={emotionCache}>
-      <Head>
-        <title>Material Kit Pro</title>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-      </Head>
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <AuthProvider>
-            <AuthConsumer>
-              {(auth) => (auth.isLoading ? <Fragment /> : getLayout(<Component {...pageProps} />))}
-            </AuthConsumer>
-          </AuthProvider>
-        </ThemeProvider>
-      </LocalizationProvider>
-    </CacheProvider>
+    <ApolloWrapper>
+      <AuthProvider>
+        <CacheProvider value={emotionCache}>
+          <Head>
+            <title>NITR Avenue Dashboard</title>
+            <meta name="viewport" content="initial-scale=1, width=device-width" />
+          </Head>
+
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <OrgProvider>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+
+                {getLayout(<Component {...pageProps} />)}
+              </ThemeProvider>
+            </OrgProvider>
+          </LocalizationProvider>
+
+          <ToastContainer />
+        </CacheProvider>
+      </AuthProvider>
+    </ApolloWrapper>
   );
 };
 

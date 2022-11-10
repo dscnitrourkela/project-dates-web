@@ -1,0 +1,34 @@
+query Event(
+  $eventId: ID
+  $orgId: ID
+  $orgType: OrgType
+  $startDate: DateTime
+  $endDate: DateTime
+  $status: StatusType
+) {
+  event(
+    id: $eventId
+    orgID: $orgId
+    orgType: $orgType
+    startDate: $startDate
+    endDate: $endDate
+    status: $status
+  ) {
+    id
+    name
+    description
+    poster
+    startDate
+    endDate
+    notes
+    orgType
+    weekly
+    repeatDay
+    priority
+    type
+    status
+    locationID
+    orgID
+    eventRegistrationCount
+  }
+}

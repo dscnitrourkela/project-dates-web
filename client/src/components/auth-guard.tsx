@@ -33,8 +33,8 @@ export const AuthGuard: React.FC<React.PropsWithChildren> = ({ children }) => {
       console.log('Not authenticated, redirecting');
       router
         .replace({
-          pathname: '/sign-in',
-          query: router.asPath !== '/' ? { continueUrl: router.asPath } : undefined,
+          pathname: '/login',
+          query: router.asPath !== '/dashboard' ? { continueUrl: router.asPath } : undefined,
         })
         .catch(console.error);
     } else {

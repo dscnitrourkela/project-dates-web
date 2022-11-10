@@ -35,7 +35,7 @@ const Register = () => {
       policy: Yup.boolean().oneOf([true], 'This field must be checked'),
     }),
     onSubmit: () => {
-      Router.push('/').catch(console.error);
+      Router.push('/dashboard').catch(console.error);
     },
   });
 

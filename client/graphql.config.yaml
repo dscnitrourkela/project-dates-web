@@ -1,0 +1,14 @@
+schema:
+  - https://avenue-api.nitrkl.in/graphql:
+      headers:
+        Authorizaton: Bearer
+documents:
+  - 'src/**/*.graphql'
+generates:
+  src/__generated__/graphql.ts:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
+    config:
+      withRefetchFn: true

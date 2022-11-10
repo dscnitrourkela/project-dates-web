@@ -3,12 +3,27 @@ import React, {
   createContext,
   useContext,
   useEffect,
-  useReducer,
-  useRef
+  useReducer
 } from 'react';
+import { toast } from 'react-toastify';
 
-import { auth, ENABLE_AUTH } from '../../lib/auth';
-import { AUTH_ACTION_TYPE, User } from '../actions';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  onIdTokenChanged,
+  signInWithPopup
+} from 'firebase/auth';
+import Router, { useRouter } from 'next/router';
+
+import { useUserLazyQuery } from '../../graphql/graphql-types';
+import { avenueApi } from '../../lib/api';
+import {
+  getApolloLink,
+  GraphQLClient
+} from '../../lib/apollo';
+import { app } from '../../lib/firebase';
+import { AUTH_ACTION_TYPE } from '../actions';
 import {
   authInitialState,
   AuthInitialState,
@@ -16,12 +31,12 @@ import {
 } from '../reducers';
 
 interface AuthContextType extends AuthInitialState {
-  signIn: (user: User) => void;
-  signOut: () => void;
+  signIn: () => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
+export const AuthConsumer = AuthContext.Consumer;
 export const useAuthContext = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) throw new Error('useAuthContext must be used within a AuthProvider');
@@ -29,73 +44,121 @@ export const useAuthContext = (): AuthContextType => {
   return context;
 };
 
-export const AuthConsumer = AuthContext.Consumer;
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => {
+  const { query } = useRouter();
   const [state, dispatch] = useReducer(authReducer, authInitialState);
-  const initialized = useRef(false);
 
-  const initialize = async () => {
-    if (initialized.current) return;
+  const [getUser] = useUserLazyQuery();
 
-    initialized.current = true;
+  const setLoading = (isLoading = true) =>
+    dispatch({
+      type: AUTH_ACTION_TYPE.LOADING,
+      payload: isLoading,
+    });
 
-    /**
-     * Check if auth has been skipped
-     * From sign-in page we may have set "skip-auth" to "true"
-     */
-    const authSkipped = globalThis.sessionStorage.getItem('skip-auth') === 'true';
-    if (authSkipped)
-      return dispatch({
-        type: AUTH_ACTION_TYPE.INITIALIZE,
-        payload: {},
-      });
-
-    /**
-     * Check if authentication with Zalter is enabled
-     * If not, then set user as authenticated
-     */
-    if (!ENABLE_AUTH)
-      return dispatch({
-        type: AUTH_ACTION_TYPE.INITIALIZE,
-        payload: {},
-      });
-
+  const signIn = async () => {
     try {
-      if (!auth) return console.error('Auth undefined');
-      // Check if user is authenticated
-      const isAuthenticated = await auth.isAuthenticated();
+      setLoading();
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      const {
+        code: errorCode,
+        message: errorMessage,
+        customData: { email },
+      } = error;
+      const credential = GoogleAuthProvider.credentialFromError(error);
+      console.error(errorCode, errorMessage, email, credential);
+      toast.error(errorMessage);
+    }
 
-      if (isAuthenticated)
-        return dispatch({
-          type: AUTH_ACTION_TYPE.INITIALIZE,
-          payload: {},
-        });
+    setLoading(false);
+  };
 
+  const signOut = async () => {
+    setLoading();
+    try {
+      await auth.signOut();
       dispatch({
-        type: AUTH_ACTION_TYPE.INITIALIZE,
+        type: AUTH_ACTION_TYPE.SIGN_OUT,
       });
     } catch (error) {
+      setLoading(false);
       console.error(error);
-      dispatch({
-        type: AUTH_ACTION_TYPE.INITIALIZE,
-      });
+      toast.error(error.message);
     }
   };
 
-  const signIn = (user: User) =>
-    dispatch({
-      type: AUTH_ACTION_TYPE.INITIALIZE,
-      payload: user,
-    });
-
-  const signOut = () =>
-    dispatch({
-      type: AUTH_ACTION_TYPE.SIGN_OUT,
-    });
-
   useEffect(() => {
-    initialize().catch(console.error);
+    onIdTokenChanged(auth, async (user) => {
+      if (user) {
+        const accessToken = await user.getIdToken();
+        GraphQLClient.setLink(getApolloLink(accessToken));
+        console.log(accessToken, user.uid);
+
+        dispatch({
+          type: AUTH_ACTION_TYPE.ACCESS_TOKEN,
+          payload: {
+            accessToken,
+          },
+        });
+      }
+    });
+    onAuthStateChanged(auth, async (user) => {
+      try {
+        if (user) {
+          const accessToken = await user.getIdToken();
+          GraphQLClient.setLink(getApolloLink(accessToken));
+          console.log(accessToken, user.uid);
+
+          const {
+            loading: userLoading,
+            error: userError,
+            data: userData,
+          } = await getUser({
+            variables: {
+              uid: user.uid,
+            },
+          });
+
+          if (!userData.user.length) return toast.error('User unauthorized to access Dashboard');
+
+          const { data: userPermissions } = await avenueApi.get('/auth', {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+
+          dispatch({
+            type: AUTH_ACTION_TYPE.SIGN_IN,
+            payload: {
+              accessToken,
+              firebase: user,
+              uid: user.uid,
+              permissions: userPermissions?.permissions,
+              userID: userData.user[0].id,
+              ...userData.user[0],
+            },
+          });
+          const { continueUrl } = query;
+          if (continueUrl) {
+            Router.push(`${continueUrl}`);
+          } else {
+            Router.push('/dashboard');
+          }
+        } else {
+          Router.push('/login');
+        }
+      } catch (error) {
+        setLoading(false);
+        console.error(error);
+        toast.error(error.message);
+      }
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
