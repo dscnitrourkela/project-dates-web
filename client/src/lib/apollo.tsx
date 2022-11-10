@@ -35,7 +35,7 @@ const link = from([
   errorLink,
   new HttpLink({
     // uri: 'http://localhost:9000/graphql',
-    uri: 'https://avenue-api.nitrkl.in',
+    uri: 'https://avenue-api.nitrkl.in/graphql',
   }),
 ]);
 
