@@ -39,6 +39,7 @@ const Page = () => {
         skip: 0,
         take: 10,
       },
+      orgID: org.id,
     },
   });
 

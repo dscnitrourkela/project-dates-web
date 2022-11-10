@@ -137,7 +137,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => 
               accessToken,
               firebase: user,
               uid: user.uid,
-              permissions: userPermissions.permissions,
+              permissions: userPermissions?.permissions,
               userID: userData.user[0].id,
               ...userData.user[0],
             },

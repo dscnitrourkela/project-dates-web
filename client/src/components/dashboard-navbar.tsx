@@ -56,7 +56,7 @@ export const DashboardNavbar: React.FC<IDashboardNavbar> = ({ onSidebarOpen, ...
   useEffect(() => {
     (async () => {
       if (user?.permissions) {
-        if (user.permissions.superAdmin) {
+        if (user?.permissions.superAdmin) {
           const { data } = await getOrgs();
           setOrgs(data.org);
           setOrg(data.org[0]);
@@ -64,12 +64,14 @@ export const DashboardNavbar: React.FC<IDashboardNavbar> = ({ onSidebarOpen, ...
         }
 
         const userOrgs = [];
-        [user.permissions.orgAdmin, user.permissions.orgEditor, user.permissions.orgViewer].forEach(
-          (orgList) => {
-            // @ts-ignore
-            orgList.forEach((id) => userOrgs.push(id));
-          },
-        );
+        [
+          user?.permissions.orgAdmin,
+          user?.permissions.orgEditor,
+          user?.permissions.orgViewer,
+        ].forEach((orgList) => {
+          // @ts-ignore
+          orgList.forEach((id) => userOrgs.push(id));
+        });
 
         const orgList = await Promise.all(
           userOrgs.map((id) => getOrgs({ variables: { orgID: id } })),

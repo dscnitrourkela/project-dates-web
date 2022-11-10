@@ -541,12 +541,12 @@ export type Transaction = {
   amount: Scalars['Int'];
   comment?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
-  org: Org;
+  org?: Maybe<Org>;
   orgID: Scalars['ID'];
   timestamp: Scalars['DateTime'];
   transactionID: Scalars['ID'];
   type: TransactionType;
-  user: User;
+  user?: Maybe<User>;
   userID: Scalars['ID'];
 };
 
@@ -598,7 +598,7 @@ export type UserCreateInputType = {
   dob?: InputMaybe<Scalars['DateTime']>;
   email: Scalars['String'];
   gender?: InputMaybe<GenderType>;
-  mobile?: InputMaybe<Scalars['String']>;
+  mobile: Scalars['String'];
   name?: InputMaybe<Scalars['String']>;
   photo?: InputMaybe<Scalars['String']>;
   referredBy?: InputMaybe<Scalars['String']>;
@@ -681,7 +681,7 @@ export type TransactionQueryVariables = Exact<{
 }>;
 
 
-export type TransactionQuery = { __typename?: 'Query', transaction?: Array<{ __typename?: 'Transaction', amount: number, transactionID: string, type: TransactionType, timestamp: any, user: { __typename?: 'User', name?: string | null, email: string, mobile?: string | null } } | null> | null };
+export type TransactionQuery = { __typename?: 'Query', transaction?: Array<{ __typename?: 'Transaction', amount: number, transactionID: string, type: TransactionType, timestamp: any, user?: { __typename?: 'User', name?: string | null, email: string, mobile?: string | null } | null } | null> | null };
 
 export type UserQueryVariables = Exact<{
   festID?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
@@ -695,6 +695,7 @@ export type UserQueryVariables = Exact<{
   referredBy?: InputMaybe<Scalars['String']>;
   isNitrStudent?: InputMaybe<Scalars['Boolean']>;
   pagination?: InputMaybe<PaginationInputType>;
+  orgID?: InputMaybe<Scalars['ID']>;
 }>;
 
 
@@ -963,7 +964,7 @@ export type TransactionQueryHookResult = ReturnType<typeof useTransactionQuery>;
 export type TransactionLazyQueryHookResult = ReturnType<typeof useTransactionLazyQuery>;
 export type TransactionQueryResult = Apollo.QueryResult<TransactionQuery, TransactionQueryVariables>;
 export const UserDocument = gql`
-    query User($festID: [String!], $id: ID, $uid: ID, $email: String, $city: String, $state: String, $college: String, $stream: String, $referredBy: String, $isNitrStudent: Boolean, $pagination: paginationInputType) {
+    query User($festID: [String!], $id: ID, $uid: ID, $email: String, $city: String, $state: String, $college: String, $stream: String, $referredBy: String, $isNitrStudent: Boolean, $pagination: paginationInputType, $orgID: ID) {
   user(
     festID: $festID
     id: $id
@@ -976,6 +977,7 @@ export const UserDocument = gql`
     referredBy: $referredBy
     isNitrStudent: $isNitrStudent
     pagination: $pagination
+    orgID: $orgID
   ) {
     email
     id
@@ -1025,6 +1027,7 @@ export const UserDocument = gql`
  *      referredBy: // value for 'referredBy'
  *      isNitrStudent: // value for 'isNitrStudent'
  *      pagination: // value for 'pagination'
+ *      orgID: // value for 'orgID'
  *   },
  * });
  */

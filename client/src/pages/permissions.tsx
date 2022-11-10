@@ -34,7 +34,6 @@ const isEmailValid = (str) =>
 
 const Page = () => {
   const { user: loggedInUser } = useAuthContext();
-  const { org } = useOrgContext();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState(false);
   const [userLoading, setUserLoading] = useState(false);
@@ -131,7 +130,17 @@ const Page = () => {
           </Container>
         </Box>
       ) : (
-        <Typography>Not Authorized to view this Page</Typography>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            py: 8,
+          }}
+        >
+          <Container maxWidth="lg">
+            <Typography>Not Authorized to view this Page</Typography>
+          </Container>
+        </Box>
       )}
     </>
   );

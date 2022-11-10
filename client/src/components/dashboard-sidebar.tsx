@@ -159,7 +159,7 @@ export const DashboardSidebar: React.FC<IDashboardSidebar> = (props) => {
           }}
         />
         <Box sx={{ flexGrow: 1 }}>
-          {items(user.permissions).map((item) => (
+          {items(user?.permissions).map((item) => (
             <NavItem key={item.title} icon={item.icon} href={item.href} title={item.title} />
           ))}
         </Box>

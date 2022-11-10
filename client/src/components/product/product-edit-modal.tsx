@@ -247,7 +247,7 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
           sx={{ marginBottom: '1rem' }}
         >
           <Tab value={STAGES.VIEW} label="View Details" />
-          {(user.permissions?.superAdmin || user.permissions?.superEditor) && (
+          {(user?.permissions?.superAdmin || user?.permissions?.superEditor) && (
             <Tab value={STAGES.EDIT} label="Edit Event" />
           )}
           <Tab value={STAGES.REGISTERED} label="Registered User Details" />

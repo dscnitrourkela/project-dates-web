@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 
-import { Box, Container } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 
 import MUIDataTable from 'mui-datatables';
 import Head from 'next/head';
 
 import { DashboardLayout } from '../components/dashboard-layout';
 import { useTransactionQuery } from '../graphql/graphql-types';
+import { useAuthContext } from '../store/contexts';
 import { useOrgContext } from '../store/contexts/org.context';
 
 const Transactions = () => {
+  const { user } = useAuthContext();
   const { org } = useOrgContext();
   const [pageNumber, setPageNumber] = useState<number | undefined>(0);
   const [rowNumber, setRowNumber] = useState(10);
@@ -104,7 +106,11 @@ const Transactions = () => {
         }}
       >
         <Container maxWidth={false}>
-          <Box sx={{ mt: 3 }}>{renderUsers()}</Box>
+          {user?.permissions.superAdmin ? (
+            <Box sx={{ mt: 3 }}>{renderUsers()}</Box>
+          ) : (
+            <Typography>Not Authorized to view this Page</Typography>
+          )}
         </Container>
       </Box>
     </>

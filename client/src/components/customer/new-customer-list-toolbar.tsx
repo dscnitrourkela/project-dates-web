@@ -48,7 +48,6 @@ export const NewCustomerListToolbar = () => {
   const [user, setUser] = useState<UserQuery['user'][0] | undefined>();
   const [transaction, setTransaction] = useState<TransactionQuery['transaction'][0] | undefined>();
 
-  // undefined undefined false
   const [fetchUser] = useUserLazyQuery();
   const [fetchTransactionDetails] = useTransactionLazyQuery();
 
@@ -59,6 +58,7 @@ export const NewCustomerListToolbar = () => {
       const { data } = await fetchUser({
         variables: {
           email,
+          orgID: org.id,
         },
       });
       setUser(data.user[0]);

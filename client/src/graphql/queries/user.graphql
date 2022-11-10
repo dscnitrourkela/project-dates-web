@@ -10,6 +10,7 @@ query User(
   $referredBy: String
   $isNitrStudent: Boolean
   $pagination: paginationInputType
+  $orgID: ID
 ) {
   user(
     festID: $festID
@@ -23,6 +24,7 @@ query User(
     referredBy: $referredBy
     isNitrStudent: $isNitrStudent
     pagination: $pagination
+    orgID: $orgID
   ) {
     email
     id

@@ -18,6 +18,7 @@ import {
   UserQuery,
   useUserLazyQuery
 } from '../../graphql/graphql-types';
+import { useOrgContext } from '../../store/contexts/org.context';
 
 const isEmailValid = (str) =>
   String(str)
@@ -27,6 +28,7 @@ const isEmailValid = (str) =>
     );
 
 const UserSearch = ({ eventId }) => {
+  const { org } = useOrgContext();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState(false);
   const [userLoading, setUserLoading] = useState(false);
@@ -45,6 +47,7 @@ const UserSearch = ({ eventId }) => {
       const { data: userData } = await fetchUser({
         variables: {
           email,
+          orgID: org.id,
         },
       });
 
