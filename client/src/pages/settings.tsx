@@ -5,7 +5,7 @@ import { Box, Container, Typography } from '@mui/material';
 import Head from 'next/head';
 
 import { DashboardLayout } from '../components/dashboard-layout';
-import { SettingsNotifications } from '../components/settings/settings-notifications';
+// import { SettingsNotifications } from '../components/settings/settings-notifications';
 import { SettingsPassword } from '../components/settings/settings-password';
 
 const Page = () => (
@@ -24,7 +24,7 @@ const Page = () => (
         <Typography sx={{ mb: 3 }} variant="h4">
           Settings
         </Typography>
-        <SettingsNotifications />
+        {/* <SettingsNotifications /> */}
         <Box sx={{ pt: 3 }}>
           <SettingsPassword />
         </Box>
