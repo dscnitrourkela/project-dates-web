@@ -23,8 +23,6 @@ const Transactions = () => {
     },
   });
 
-  console.log(data);
-
   const onPageChange = (pN: number, rPP: number) => {
     fetchMore({
       variables: {

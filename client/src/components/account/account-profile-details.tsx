@@ -32,6 +32,7 @@ const genderOptions = [
 
 export interface IAccountProfileDetails {
   user: UserQuery['user'][0];
+  disableAll?: boolean;
 }
 
 const initialState = {
@@ -56,7 +57,7 @@ const getNitrStudentDetails = (isNitrStudent, key, user) => {
   return isNitrStudent ? obj[key] : user[key];
 };
 
-export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({ user }) => {
+export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({ user, disableAll }) => {
   const { org } = useOrgContext();
   const isNitrStudent = !!user.rollNumber;
 
@@ -76,44 +77,48 @@ export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({ user }
 
   useEffect(() => {
     setValues({
-      name: { value: user.name, disabled: false, full: true },
+      name: { value: user.name, disabled: disableAll || false, full: true },
 
-      email: { value: user.email, disabled: true, full: false },
-      mobile: { value: user.mobile, disabled: true, full: false },
+      email: { value: user.email, disabled: disableAll || true, full: false },
+      mobile: { value: user.mobile, disabled: disableAll || true, full: false },
 
       college: {
         value: getNitrStudentDetails(isNitrStudent, 'college', user),
-        disabled: false,
+        disabled: disableAll || false,
         full: false,
       },
-      stream: { value: user.stream, disabled: false, full: false },
+      stream: { value: user.stream, disabled: disableAll || false, full: false },
 
-      rollNumber: { value: user.rollNumber, disabled: true, full: true },
+      rollNumber: { value: user.rollNumber, disabled: disableAll || true, full: true },
 
       city: {
         value: getNitrStudentDetails(isNitrStudent, 'city', user),
-        disabled: false,
+        disabled: disableAll || false,
         full: false,
       },
       state: {
         value: getNitrStudentDetails(isNitrStudent, 'state', user),
-        disabled: false,
+        disabled: disableAll || false,
         full: false,
       },
 
-      gender: { value: user.gender, disabled: false, full: false, type: 'select' },
-      referredBy: { value: user.referredBy, disabled: true, full: false },
+      gender: { value: user.gender, disabled: disableAll || false, full: false, type: 'select' },
+      referredBy: { value: user.referredBy, disabled: disableAll || true, full: false },
     });
   }, [user]);
 
   return (
     <form autoComplete="off" noValidate>
       <Card>
-        <CardHeader
-          subheader="Some of the information can be updated. Not all information is updatable."
-          title="Profile"
-        />
-        <Divider />
+        {!disableAll && (
+          <>
+            <CardHeader
+              subheader="Some of the information can be updated. Not all information is updatable."
+              title="Profile"
+            />
+            <Divider />
+          </>
+        )}
         <CardContent>
           <Grid container spacing={3}>
             {Object.keys(values).map((key) => {
@@ -155,27 +160,29 @@ export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({ user }
         </CardContent>
         <Divider />
 
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            p: 2,
-          }}
-        >
-          <Button
-            color={user.festID.includes(org.festID) || user.rollNumber ? 'success' : 'error'}
-            variant="contained"
+        {!disableAll && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              p: 2,
+            }}
           >
-            {user.festID.includes(org.festID) || user.rollNumber
-              ? 'User Registered for '
-              : 'User Not Registered for '}
-            {org.name}
-          </Button>
+            <Button
+              color={user.festID.includes(org.festID) || user.rollNumber ? 'success' : 'error'}
+              variant="contained"
+            >
+              {user.festID.includes(org.festID) || user.rollNumber
+                ? 'User Registered for '
+                : 'User Not Registered for '}
+              {org.name}
+            </Button>
 
-          <Button disabled={buttonDisabled} color="primary" variant="contained">
-            Update details
-          </Button>
-        </Box>
+            <Button disabled={buttonDisabled} color="primary" variant="contained">
+              Update details
+            </Button>
+          </Box>
+        )}
       </Card>
     </form>
   );

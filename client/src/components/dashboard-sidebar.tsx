@@ -51,11 +51,6 @@ const items = [
     title: 'Permissions',
   },
   // {
-  //   href: '/settings',
-  //   icon: <CogIcon fontSize="small" />,
-  //   title: 'Settings',
-  // },
-  // {
   //   href: '/developer-info',
   //   icon: <UserAddIcon fontSize="small" />,
   //   title: 'Developer Info',
