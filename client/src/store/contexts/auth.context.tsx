@@ -11,6 +11,7 @@ import {
   getAuth,
   GoogleAuthProvider,
   onAuthStateChanged,
+  onIdTokenChanged,
   signInWithPopup
 } from 'firebase/auth';
 import Router, { useRouter } from 'next/router';
@@ -91,6 +92,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => 
   };
 
   useEffect(() => {
+    onIdTokenChanged(auth, async (user) => {
+      if (user) {
+        const accessToken = await user.getIdToken();
+        GraphQLClient.setLink(getApolloLink(accessToken));
+        console.log(accessToken, user.uid);
+
+        dispatch({
+          type: AUTH_ACTION_TYPE.ACCESS_TOKEN,
+          payload: {
+            accessToken,
+          },
+        });
+      }
+    });
     onAuthStateChanged(auth, async (user) => {
       try {
         if (user) {
@@ -107,6 +122,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => 
               uid: user.uid,
             },
           });
+
+          if (!userData.user.length) return toast.error('User unauthorized to access Dashboard');
 
           const { data: userPermissions } = await avenueApi.get('/auth', {
             headers: {

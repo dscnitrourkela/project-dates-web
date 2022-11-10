@@ -16,6 +16,8 @@ import {
   EventRegistrationQuery,
   useUpdateEventMutation
 } from '../../graphql/graphql-types';
+import { useAuthContext } from '../../store/contexts';
+import UserSearch from './user-search';
 
 const style = {
   position: 'absolute',
@@ -48,9 +50,9 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
   handleClose,
   event,
   refetchEvents,
-  eventRegistration,
 }) => {
   const [stage, setStage] = useState(STAGES.VIEW);
+  const { user } = useAuthContext();
 
   const name = JSON.parse(event.name);
   const [values, setValues] = useState({
@@ -119,28 +121,7 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
   const renderStages = () => {
     switch (stage) {
       case STAGES.REGISTERED:
-        return (
-          <MUIDataTable
-            title={'User List'}
-            data={eventRegistration?.map(({ user }, index) => ({ ...user, '#': index + 1 }))}
-            columns={[
-              '#',
-              ...Object.keys(eventRegistration[0]?.user || {}).filter(
-                (key) =>
-                  !['fests', 'ca', 'id', '__typename', 'selfID', 'dob', 'uid', 'photo'].includes(
-                    key,
-                  ),
-              ),
-            ]}
-            options={{
-              filter: true,
-              sort: true,
-              search: true,
-              filterType: 'dropdown',
-              selectableRows: false,
-            }}
-          />
-        );
+        return <UserSearch eventId={event.id} />;
 
       case STAGES.VIEW:
       case STAGES.EDIT:
@@ -266,7 +247,9 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
           sx={{ marginBottom: '1rem' }}
         >
           <Tab value={STAGES.VIEW} label="View Details" />
-          <Tab value={STAGES.EDIT} label="Edit Event" />
+          {(user.permissions?.superAdmin || user.permissions?.superEditor) && (
+            <Tab value={STAGES.EDIT} label="Edit Event" />
+          )}
           <Tab value={STAGES.REGISTERED} label="Registered User Details" />
         </Tabs>
         {renderStages()}

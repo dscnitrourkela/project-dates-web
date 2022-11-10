@@ -32,6 +32,15 @@ export const authReducer = (state: AuthInitialState, action: AuthActionType): Au
         user: action.payload,
       };
 
+    case AUTH_ACTION_TYPE.ACCESS_TOKEN:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          accessToken: action.payload.accessToken,
+        },
+      };
+
     case AUTH_ACTION_TYPE.SIGN_OUT:
       return {
         ...state,

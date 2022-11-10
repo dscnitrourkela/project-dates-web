@@ -22,6 +22,7 @@ import {
   UserQuery,
   useUserLazyQuery
 } from '../graphql/graphql-types';
+import { useAuthContext } from '../store/contexts';
 import { useOrgContext } from '../store/contexts/org.context';
 
 const isEmailValid = (str) =>
@@ -32,6 +33,7 @@ const isEmailValid = (str) =>
     );
 
 const Page = () => {
+  const { user: loggedInUser } = useAuthContext();
   const { org } = useOrgContext();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState(false);
@@ -68,65 +70,69 @@ const Page = () => {
       <Head>
         <title>Settings | Material Kit</title>
       </Head>
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          py: 8,
-        }}
-      >
-        <Container maxWidth="lg">
-          <Typography sx={{ mb: 3 }} variant="h4">
-            Permissions
-          </Typography>
+      {loggedInUser?.permissions?.superAdmin ? (
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            py: 8,
+          }}
+        >
+          <Container maxWidth="lg">
+            <Typography sx={{ mb: 3 }} variant="h4">
+              Permissions
+            </Typography>
 
-          <Card sx={{ mb: '1rem' }}>
-            <CardContent>
-              <Box
-                sx={{
-                  width: '100%',
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  alignItems: 'top',
-                }}
-              >
-                <TextField
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  fullWidth
-                  placeholder="Enter User Email ID"
-                  variant="outlined"
-                  sx={{ marginRight: '0.5rem', width: '60%' }}
-                  onBlur={onBlur}
-                  error={emailError}
-                  helperText={emailError && 'invalid email id'}
-                />
-                <Button
-                  onClick={onSearchClick}
-                  disabled={userLoading || !isEmailValid(email)}
-                  variant="contained"
-                  sx={{ marginRight: '0.5rem', width: '19%', height: '56px' }}
-                  startIcon={
-                    // @ts-ignore
-                    <SvgIcon fontSize="small" color="white">
-                      <SearchIcon />
-                    </SvgIcon>
-                  }
+            <Card sx={{ mb: '1rem' }}>
+              <CardContent>
+                <Box
+                  sx={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                    alignItems: 'top',
+                  }}
                 >
-                  Search
-                </Button>
-              </Box>
-            </CardContent>
-          </Card>
+                  <TextField
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    fullWidth
+                    placeholder="Enter User Email ID"
+                    variant="outlined"
+                    sx={{ marginRight: '0.5rem', width: '60%' }}
+                    onBlur={onBlur}
+                    error={emailError}
+                    helperText={emailError && 'invalid email id'}
+                  />
+                  <Button
+                    onClick={onSearchClick}
+                    disabled={userLoading || !isEmailValid(email)}
+                    variant="contained"
+                    sx={{ marginRight: '0.5rem', width: '19%', height: '56px' }}
+                    startIcon={
+                      // @ts-ignore
+                      <SvgIcon fontSize="small" color="white">
+                        <SearchIcon />
+                      </SvgIcon>
+                    }
+                  >
+                    Search
+                  </Button>
+                </Box>
+              </CardContent>
+            </Card>
 
-          {user && (
-            <>
-              <SettingsNotifications searchedUser={user} />
-              <AccountProfileDetails user={user} disableAll={true} />
-            </>
-          )}
-        </Container>
-      </Box>
+            {user && (
+              <>
+                <SettingsNotifications searchedUser={user} />
+                <AccountProfileDetails user={user} disableAll={true} />
+              </>
+            )}
+          </Container>
+        </Box>
+      ) : (
+        <Typography>Not Authorized to view this Page</Typography>
+      )}
     </>
   );
 };

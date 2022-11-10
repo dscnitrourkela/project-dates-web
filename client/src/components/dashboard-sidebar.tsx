@@ -21,34 +21,40 @@ import { Users as UsersIcon } from 'icons/users';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
+import { useAuthContext } from '../store/contexts';
 import { Logo } from './logo';
 import { NavItem } from './nav-item';
 
-const items = [
+const items = (permissions) => [
   {
     href: '/dashboard',
     icon: <ChartBarIcon fontSize="small" />,
     title: 'Dashboard',
+    show: true,
   },
   {
     href: '/users',
     icon: <UsersIcon fontSize="small" />,
     title: 'Users',
+    show: true,
   },
   {
     href: '/events',
     icon: <ShoppingBagIcon fontSize="small" />,
     title: 'Events',
+    show: true,
   },
   {
     href: '/transactions',
     icon: <UserIcon fontSize="small" />,
     title: 'Transactions',
+    show: true,
   },
   {
     href: '/permissions',
     icon: <LockIcon fontSize="small" />,
     title: 'Permissions',
+    show: permissions?.superAdmin,
   },
   // {
   //   href: '/developer-info',
@@ -73,6 +79,7 @@ export interface IDashboardSidebar {
 }
 
 export const DashboardSidebar: React.FC<IDashboardSidebar> = (props) => {
+  const { user } = useAuthContext();
   const { open, onClose } = props;
   const router = useRouter();
   const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'), {
@@ -152,7 +159,7 @@ export const DashboardSidebar: React.FC<IDashboardSidebar> = (props) => {
           }}
         />
         <Box sx={{ flexGrow: 1 }}>
-          {items.map((item) => (
+          {items(user.permissions).map((item) => (
             <NavItem key={item.title} icon={item.icon} href={item.href} title={item.title} />
           ))}
         </Box>
