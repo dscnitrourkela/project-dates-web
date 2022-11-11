@@ -76,7 +76,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Users</title>
+        <title>Users | Avenue Dashboard</title>
       </Head>
       <Box
         component="main"

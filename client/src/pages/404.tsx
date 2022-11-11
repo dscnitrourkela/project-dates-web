@@ -14,7 +14,7 @@ import NextLink from 'next/link';
 const Page = () => (
   <>
     <Head>
-      <title>404 | Material Kit</title>
+      <title>404 | Avenue Dashboard</title>
     </Head>
     <Box
       component="main"

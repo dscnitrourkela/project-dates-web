@@ -18,7 +18,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Dashboard | Material Kit</title>
+        <title>Avenue Dashboard</title>
       </Head>
       <Box
         component="main"

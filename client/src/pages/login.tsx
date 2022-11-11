@@ -19,7 +19,7 @@ const Login = () => {
   return (
     <>
       <Head>
-        <title>Login | Material Kit</title>
+        <title>Login | Avenue Dashboard</title>
       </Head>
       <Box
         component="main"
