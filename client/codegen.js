@@ -1,8 +1,8 @@
 require('dotenv').config();
 
 module.exports = {
-  // schema: 'http://localhost:9000/graphql',
-  schema: 'https://avenue-api.nitrkl.in/graphql',
+  schema: 'http://localhost:9000/graphql',
+  // schema: 'https://avenue-api.nitrkl.in/graphql',
   documents: ['src/graphql/**/*.graphql'],
   overwrite: true,
   generates: {

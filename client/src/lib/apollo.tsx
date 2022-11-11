@@ -34,8 +34,8 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 const link = from([
   errorLink,
   new HttpLink({
-    // uri: 'http://localhost:9000/graphql',
-    uri: 'https://avenue-api.nitrkl.in/graphql',
+    uri: 'http://localhost:9000/graphql',
+    // uri: 'https://avenue-api.nitrkl.in/graphql',
   }),
 ]);
 

@@ -61,6 +61,11 @@ export const NewCustomerListToolbar = () => {
           orgID: org.id,
         },
       });
+
+      if (!data.user[0]) {
+        throw new Error('User not registered for Innovision 2022');
+      }
+
       setUser(data.user[0]);
       setUserLoading(false);
 

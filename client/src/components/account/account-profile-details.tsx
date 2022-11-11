@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 import {
   Box,
@@ -7,12 +8,16 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   Divider,
   Grid,
   TextField
 } from '@mui/material';
 
-import { UserQuery } from '../../graphql/graphql-types';
+import {
+  UserQuery,
+  useUpdateUserMutation
+} from '../../graphql/graphql-types';
 import { useOrgContext } from '../../store/contexts/org.context';
 
 const genderOptions = [
@@ -64,6 +69,22 @@ export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({ user, 
   const [buttonDisabled, setDisabled] = useState(true);
   const [values, setValues] = useState(initialState);
 
+  const [updateUser, { data, loading, error }] = useUpdateUserMutation({
+    variables: {
+      updateUserId: user.id,
+      user: {
+        ca: org.festID,
+      },
+    },
+  });
+
+  const handleCheckIn = async () => {
+    if (user.ca.length > 0) {
+      return toast.info('User is already checked in');
+    }
+    updateUser();
+  };
+
   const handleInputChange = (e, key) => {
     setDisabled(false);
     setValues((current) => ({
@@ -106,6 +127,12 @@ export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({ user, 
       referredBy: { value: user.referredBy, disabled: disableAll || true, full: false },
     });
   }, [user]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message);
+    }
+  }, [error]);
 
   return (
     <form autoComplete="off" noValidate>
@@ -168,19 +195,51 @@ export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({ user, 
               p: 2,
             }}
           >
-            <Button
-              color={user.festID.includes(org.festID) || user.rollNumber ? 'success' : 'error'}
-              variant="contained"
-            >
-              {user.festID.includes(org.festID) || user.rollNumber
-                ? 'User Registered for '
-                : 'User Not Registered for '}
-              {org.name}
-            </Button>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+              <Button
+                color={user.ca.length || data?.updateUser.ca.length ? 'info' : 'primary'}
+                variant="contained"
+                disabled={loading}
+                onClick={handleCheckIn}
+                sx={{ mr: '10px', height: '40px', mb: '10px' }}
+              >
+                {loading ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  <>{user.ca.length || data?.updateUser.ca.length ? 'check in done' : 'check in'}</>
+                )}
+              </Button>
 
-            <Button disabled={buttonDisabled} color="primary" variant="contained">
-              Update details
-            </Button>
+              <Button
+                color={user.createdAt < '2022-11-03T06:41:51.070Z' ? 'success' : 'error'}
+                variant="contained"
+                sx={{ mr: '10px', height: '40px', mb: '10px' }}
+              >
+                {user.createdAt < '2022-11-03T06:41:51.070Z'
+                  ? 'with accomodation'
+                  : 'without accomodation'}
+              </Button>
+
+              <Button
+                color={user.festID.includes(org.festID) || user.rollNumber ? 'success' : 'error'}
+                variant="contained"
+                sx={{ mr: '10px', height: '40px', mb: '10px' }}
+              >
+                {user.festID.includes(org.festID) || user.rollNumber
+                  ? 'User Registered for '
+                  : 'User Not Registered for '}
+                {org.name}
+              </Button>
+
+              <Button
+                sx={{ mr: '10px', height: '40px', mb: '10px' }}
+                disabled={buttonDisabled}
+                color="primary"
+                variant="contained"
+              >
+                Update details
+              </Button>
+            </Box>
           </Box>
         )}
       </Card>
