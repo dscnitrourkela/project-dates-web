@@ -51,6 +51,13 @@ export const NewCustomerListToolbar = () => {
   const [fetchUser] = useUserLazyQuery();
   const [fetchTransactionDetails] = useTransactionLazyQuery();
 
+  const checkUserIn = () => {
+    setUser((current) => ({
+      ...current,
+      ca: ['innovision-2022'],
+    }));
+  };
+
   const onSearchClick = async () => {
     try {
       setUserLoading(true);
@@ -61,6 +68,10 @@ export const NewCustomerListToolbar = () => {
           orgID: org.id,
         },
       });
+
+      if (!data.user[0]) {
+        throw new Error('User not registered for Innovision 2022');
+      }
       setUser(data.user[0]);
       setUserLoading(false);
 
@@ -167,7 +178,7 @@ export const NewCustomerListToolbar = () => {
             )}
           </Grid>
           <Grid item lg={8} md={6} xs={12}>
-            {user && <AccountProfileDetails user={user} />}
+            {user && <AccountProfileDetails user={user} checkUserIn={checkUserIn} />}
           </Grid>
         </Grid>
       </Box>

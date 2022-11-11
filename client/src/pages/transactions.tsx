@@ -96,7 +96,7 @@ const Transactions = () => {
   return (
     <>
       <Head>
-        <title>Customers | Material Kit</title>
+        <title>Transactions | Avenue Dashboard</title>
       </Head>
       <Box
         component="main"

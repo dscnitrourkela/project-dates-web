@@ -41,6 +41,7 @@ query User(
     selfID
     rollNumber
     festID
+    createdAt
     fests {
       name
       description

@@ -1,5 +1,6 @@
 schema:
   - https://avenue-api.nitrkl.in/graphql:
+      # - http://localhost:9000/graphql:
       headers:
         Authorizaton: Bearer
 documents:

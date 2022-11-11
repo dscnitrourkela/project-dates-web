@@ -7,7 +7,7 @@ import Head from 'next/head';
 const Page = () => (
   <>
     <Head>
-      <title>Dashboard | Material Kit</title>
+      <title>Avenue Dashboard</title>
     </Head>
     <Box
       component="main"

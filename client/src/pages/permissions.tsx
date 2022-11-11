@@ -67,7 +67,7 @@ const Page = () => {
   return (
     <>
       <Head>
-        <title>Settings | Material Kit</title>
+        <title>Permissions | Avenue Dashboard</title>
       </Head>
       {loggedInUser?.permissions?.superAdmin ? (
         <Box

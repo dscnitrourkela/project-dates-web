@@ -574,6 +574,7 @@ export type User = {
   ca: Array<Scalars['ID']>;
   city?: Maybe<Scalars['String']>;
   college?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
   dob?: Maybe<Scalars['DateTime']>;
   email: Scalars['String'];
   festID: Array<Scalars['ID']>;
@@ -641,6 +642,14 @@ export type UpdateEventMutationVariables = Exact<{
 
 export type UpdateEventMutation = { __typename?: 'Mutation', updateEvent?: { __typename?: 'Event', name: string, description: string } | null };
 
+export type UpdateUserMutationVariables = Exact<{
+  updateUserId: Scalars['ID'];
+  user: UserUpdateInputType;
+}>;
+
+
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUser?: { __typename?: 'User', ca: Array<string> } | null };
+
 export type EventQueryVariables = Exact<{
   eventId?: InputMaybe<Scalars['ID']>;
   orgId?: InputMaybe<Scalars['ID']>;
@@ -699,7 +708,7 @@ export type UserQueryVariables = Exact<{
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', user?: Array<{ __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, festID: Array<string>, ca: Array<string>, referredBy?: string | null, fests: Array<{ __typename?: 'Org', name: string, description: string }> } | null> | null };
+export type UserQuery = { __typename?: 'Query', user?: Array<{ __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, festID: Array<string>, createdAt?: any | null, ca: Array<string>, referredBy?: string | null, fests: Array<{ __typename?: 'Org', name: string, description: string }> } | null> | null };
 
 
 export const UpdateEventDocument = gql`
@@ -738,6 +747,40 @@ export function useUpdateEventMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateEventMutationHookResult = ReturnType<typeof useUpdateEventMutation>;
 export type UpdateEventMutationResult = Apollo.MutationResult<UpdateEventMutation>;
 export type UpdateEventMutationOptions = Apollo.BaseMutationOptions<UpdateEventMutation, UpdateEventMutationVariables>;
+export const UpdateUserDocument = gql`
+    mutation UpdateUser($updateUserId: ID!, $user: UserUpdateInputType!) {
+  updateUser(id: $updateUserId, user: $user) {
+    ca
+  }
+}
+    `;
+export type UpdateUserMutationFn = Apollo.MutationFunction<UpdateUserMutation, UpdateUserMutationVariables>;
+
+/**
+ * __useUpdateUserMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserMutation, { data, loading, error }] = useUpdateUserMutation({
+ *   variables: {
+ *      updateUserId: // value for 'updateUserId'
+ *      user: // value for 'user'
+ *   },
+ * });
+ */
+export function useUpdateUserMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserMutation, UpdateUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, options);
+      }
+export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
+export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
+export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
 export const EventDocument = gql`
     query Event($eventId: ID, $orgId: ID, $orgType: OrgType, $startDate: DateTime, $endDate: DateTime, $status: StatusType) {
   event(
@@ -994,6 +1037,7 @@ export const UserDocument = gql`
     selfID
     rollNumber
     festID
+    createdAt
     fests {
       name
       description
