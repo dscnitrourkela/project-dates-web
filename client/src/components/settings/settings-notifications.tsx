@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
 import {
@@ -17,6 +17,7 @@ import {
 import { UserQuery } from '../../graphql/graphql-types';
 import { avenueApi } from '../../lib/api';
 import { useAuthContext } from '../../store/contexts';
+import { useOrgContext } from '../../store/contexts/org.context';
 
 export interface ISettingsNotifications {
   searchedUser: UserQuery['user'][0];
@@ -24,6 +25,7 @@ export interface ISettingsNotifications {
 
 export const SettingsNotifications: React.FC<ISettingsNotifications> = ({ searchedUser }) => {
   const { user } = useAuthContext();
+  const { org } = useOrgContext();
   const [loading, setLoading] = useState(false);
   const [values, setValues] = useState({
     superAdmin: false,
@@ -44,20 +46,24 @@ export const SettingsNotifications: React.FC<ISettingsNotifications> = ({ search
   const handleSaveClick = async () => {
     setLoading(true);
     try {
-      const { data } = await avenueApi.post('/auth', {
-        headers: {
-          Authorization: `Bearer ${user.accessToken}`,
-        },
-        body: {
+      const { data } = await avenueApi.post(
+        '/auth',
+        {
           uid: searchedUser.uid,
           superAdmin: values.superAdmin,
           superEditor: values.superEditor,
           superViewer: values.superViewer,
-          orgAdmin: [],
-          orgEditor: [],
-          orgViewer: [],
+          orgID: org?.id,
+          orgAdmin: values.orgAdmin,
+          orgEditor: values.orgEditor,
+          orgViewer: values.orgViewer,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`,
+          },
+        },
+      );
 
       if (data) toast.success('Successfully updated permission');
     } catch (error) {
