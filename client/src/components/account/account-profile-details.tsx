@@ -38,6 +38,7 @@ const genderOptions = [
 export interface IAccountProfileDetails {
   user: UserQuery['user'][0];
   disableAll?: boolean;
+  checkUserIn?: () => void;
 }
 
 const initialState = {
@@ -62,14 +63,18 @@ const getNitrStudentDetails = (isNitrStudent, key, user) => {
   return isNitrStudent ? obj[key] : user[key];
 };
 
-export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({ user, disableAll }) => {
+export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({
+  user,
+  disableAll,
+  checkUserIn,
+}) => {
   const { org } = useOrgContext();
   const isNitrStudent = !!user.rollNumber;
 
   const [buttonDisabled, setDisabled] = useState(true);
   const [values, setValues] = useState(initialState);
 
-  const [updateUser, { data, loading, error }] = useUpdateUserMutation({
+  const [updateUser, { loading, error }] = useUpdateUserMutation({
     variables: {
       updateUserId: user.id,
       user: {
@@ -82,7 +87,9 @@ export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({ user, 
     if (user.ca.length > 0) {
       return toast.info('User is already checked in');
     }
-    updateUser();
+
+    await updateUser();
+    checkUserIn();
   };
 
   const handleInputChange = (e, key) => {
@@ -197,7 +204,7 @@ export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({ user, 
           >
             <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
               <Button
-                color={user.ca.length || data?.updateUser.ca.length ? 'info' : 'primary'}
+                color={user.ca.length > 0 ? 'info' : 'primary'}
                 variant="contained"
                 disabled={loading}
                 onClick={handleCheckIn}
@@ -206,7 +213,7 @@ export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({ user, 
                 {loading ? (
                   <CircularProgress size={20} />
                 ) : (
-                  <>{user.ca.length || data?.updateUser.ca.length ? 'check in done' : 'check in'}</>
+                  <>{user.ca.length > 0 ? 'check in done' : 'check in'}</>
                 )}
               </Button>
 
