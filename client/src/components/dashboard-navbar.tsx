@@ -2,7 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import styled from '@emotion/styled';
 import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar, AppBarProps, Avatar, Box, IconButton, Toolbar, Tooltip } from '@mui/material';
+import {
+  AppBar,
+  AppBarProps,
+  Avatar,
+  Box,
+  Button,
+  IconButton,
+  Toolbar,
+  Tooltip,
+} from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -15,6 +24,8 @@ import { OrgQuery, useOrgLazyQuery } from '../graphql/graphql-types';
 import { useAuthContext } from '../store/contexts';
 import { useOrgContext } from '../store/contexts/org.context';
 import { AccountPopover } from './account-popover';
+import { AddCircleOutlineOutlined } from '@mui/icons-material';
+import OrgCreateModal from './org-create-modal';
 
 const DashboardNavbarRoot = styled(AppBar)<{ theme?: Theme }>(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -33,8 +44,9 @@ export const DashboardNavbar: React.FC<IDashboardNavbar> = ({ onSidebarOpen, ...
 
   const [orgs, setOrgs] = useState<OrgQuery['org'] | undefined>();
   const [openAccountPopover, setOpenAccountPopover] = useState(false);
+  const [openCreateOrgModal, setOpenCreateOrgModal] = useState(false);
 
-  const [getOrgs] = useOrgLazyQuery();
+  const [getOrgs, { refetch }] = useOrgLazyQuery();
 
   const handleChange = (event: SelectChangeEvent) => {
     const selectedOrg = orgs.filter(({ name }) => event.target.value === name);
@@ -108,6 +120,23 @@ export const DashboardNavbar: React.FC<IDashboardNavbar> = ({ onSidebarOpen, ...
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
 
+          <Button
+            variant="outlined"
+            color="info"
+            sx={{
+              marginRight: '1rem',
+              display: {
+                xs: 'none',
+                sm: 'inherit',
+              },
+            }}
+            size="small"
+            startIcon={<AddCircleOutlineOutlined />}
+            onClick={() => setOpenCreateOrgModal(true)}
+          >
+            Add Organisation
+          </Button>
+
           <Tooltip title="Select An Organisation" placement="left">
             <FormControl sx={{ width: 'auto', minWidth: '10rem', marginRight: '1rem' }}>
               <InputLabel id="demo-simple-select-label">Organisation</InputLabel>
@@ -149,6 +178,11 @@ export const DashboardNavbar: React.FC<IDashboardNavbar> = ({ onSidebarOpen, ...
         open={openAccountPopover}
         onClose={() => setOpenAccountPopover(false)}
         name={user?.firebase.displayName}
+      />
+      <OrgCreateModal
+        open={openCreateOrgModal}
+        handleClose={() => setOpenCreateOrgModal(false)}
+        refetchOrgs={refetch}
       />
     </>
   );

@@ -98,7 +98,10 @@ export const ProductCard: React.FC<IProductCard> = ({ event, refetchEvents, ...r
 
         <CardContent sx={{ paddingTop: '0px !important' }}>
           <Typography align="center" color="textPrimary" variant="body1">
-            {`${JSON.parse(event.description)[0].desc}`.substring(0, 50)}...
+            {`${JSON.parse(event.description)[0]?.desc}` === 'undefined'
+              ? ''
+              : `${JSON.parse(event.description)[0]?.desc}`.substring(0, 50)}
+            ...
           </Typography>
         </CardContent>
 

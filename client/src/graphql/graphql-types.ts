@@ -659,6 +659,13 @@ export type UpdateEventMutationVariables = Exact<{
 
 export type UpdateEventMutation = { __typename?: 'Mutation', updateEvent?: { __typename?: 'Event', name: string, description: string } | null };
 
+export type CreateOrgMutationVariables = Exact<{
+  org: OrgCreateInputType;
+}>;
+
+
+export type CreateOrgMutation = { __typename?: 'Mutation', createOrg?: { __typename?: 'Org', name: string, description: string } | null };
+
 export type UpdateUserMutationVariables = Exact<{
   updateUserId: Scalars['ID'];
   user: UserUpdateInputType;
@@ -799,6 +806,40 @@ export function useUpdateEventMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateEventMutationHookResult = ReturnType<typeof useUpdateEventMutation>;
 export type UpdateEventMutationResult = Apollo.MutationResult<UpdateEventMutation>;
 export type UpdateEventMutationOptions = Apollo.BaseMutationOptions<UpdateEventMutation, UpdateEventMutationVariables>;
+export const CreateOrgDocument = gql`
+    mutation CreateOrg($org: OrgCreateInputType!) {
+  createOrg(org: $org) {
+    name
+    description
+  }
+}
+    `;
+export type CreateOrgMutationFn = Apollo.MutationFunction<CreateOrgMutation, CreateOrgMutationVariables>;
+
+/**
+ * __useCreateOrgMutation__
+ *
+ * To run a mutation, you first call `useCreateOrgMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrgMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrgMutation, { data, loading, error }] = useCreateOrgMutation({
+ *   variables: {
+ *      org: // value for 'org'
+ *   },
+ * });
+ */
+export function useCreateOrgMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrgMutation, CreateOrgMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateOrgMutation, CreateOrgMutationVariables>(CreateOrgDocument, options);
+      }
+export type CreateOrgMutationHookResult = ReturnType<typeof useCreateOrgMutation>;
+export type CreateOrgMutationResult = Apollo.MutationResult<CreateOrgMutation>;
+export type CreateOrgMutationOptions = Apollo.BaseMutationOptions<CreateOrgMutation, CreateOrgMutationVariables>;
 export const UpdateUserDocument = gql`
     mutation UpdateUser($updateUserId: ID!, $user: UserUpdateInputType!) {
   updateUser(id: $updateUserId, user: $user) {
