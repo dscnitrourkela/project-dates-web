@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { MouseEvent, useState } from 'react';
 
 import {
   Box,
@@ -32,7 +32,10 @@ export const ProductCard: React.FC<IProductCard> = ({ event, refetchEvents, ...r
 
   const [updateEvent] = useUpdateEventMutation();
 
-  const handleDelete = async () => {
+  const handleDelete = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+
     try {
       await updateEvent({
         variables: {
@@ -52,6 +55,7 @@ export const ProductCard: React.FC<IProductCard> = ({ event, refetchEvents, ...r
   return (
     <>
       <Card
+        onClick={() => setOpenModal(true)}
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -66,12 +70,13 @@ export const ProductCard: React.FC<IProductCard> = ({ event, refetchEvents, ...r
             position: 'absolute',
             top: '0.5rem',
             right: '0.5rem',
+            zIndex: 100,
           }}
           onClick={handleDelete}
         >
           <Delete />
         </IconButton>
-        <CardContent sx={{ padding: '0 !important' }} onClick={() => setOpenModal(true)}>
+        <CardContent sx={{ padding: '0 !important' }}>
           <Box
             sx={{
               display: 'flex',

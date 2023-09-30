@@ -27,6 +27,7 @@ import { useAuthContext } from '../../store/contexts';
 import UserSearch from './user-search';
 import { EventStatus, EventTypes } from './constants';
 import { Delete } from '@mui/icons-material';
+import { RegisteredUserList } from './user-list';
 
 const style = {
   position: 'absolute',
@@ -44,6 +45,7 @@ const style = {
 const STAGES = {
   EDIT: 'Edit Event',
   REGISTERED: 'Registered Users',
+  SEARCH: 'Search Registered Users',
   VIEW: 'View Event',
 };
 
@@ -162,8 +164,11 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
 
   const renderStages = () => {
     switch (stage) {
-      case STAGES.REGISTERED:
+      case STAGES.SEARCH:
         return <UserSearch eventId={event.id} />;
+
+      case STAGES.REGISTERED:
+        return <RegisteredUserList eventId={event.id} />;
 
       case STAGES.VIEW:
       case STAGES.EDIT:
@@ -434,6 +439,7 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
             <Tab value={STAGES.EDIT} label="Edit Event" />
           )}
           <Tab value={STAGES.REGISTERED} label="Registered User Details" />
+          <Tab value={STAGES.SEARCH} label="Search registered users" />
         </Tabs>
         {renderStages()}
       </Box>

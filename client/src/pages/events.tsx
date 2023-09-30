@@ -50,11 +50,10 @@ const Page = () => {
 
   const searchEvents = (query: string) => {
     setFilteredEvents(
-      eventData.event.filter(({ name }) => {
-        const parsedName = JSON.parse(name);
+      eventData.event.filter(({ name, subHeading }) => {
         return (
-          parsedName.heading.toLowerCase().search(query.toLowerCase()) !== -1 ||
-          parsedName.subHeading.toLowerCase().search(query.toLowerCase()) !== -1
+          name?.toLowerCase().search(query.toLowerCase()) !== -1 ||
+          subHeading?.toLowerCase().search(query.toLowerCase()) !== -1
         );
       }),
     );
