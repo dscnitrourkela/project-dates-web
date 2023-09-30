@@ -9,7 +9,7 @@ import {
   Container,
   SvgIcon,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 
 import { Search as SearchIcon } from 'icons/search';
@@ -18,10 +18,7 @@ import Head from 'next/head';
 import { AccountProfileDetails } from '../components/account/account-profile-details';
 import { DashboardLayout } from '../components/dashboard-layout';
 import { SettingsNotifications } from '../components/settings/settings-notifications';
-import {
-  UserQuery,
-  useUserLazyQuery
-} from '../graphql/graphql-types';
+import { UserQuery, useUserLazyQuery } from '../graphql/graphql-types';
 import { useAuthContext } from '../store/contexts';
 import { useOrgContext } from '../store/contexts/org.context';
 

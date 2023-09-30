@@ -16,7 +16,10 @@ query Event(
   ) {
     id
     name
+    subHeading
     description
+    prizeMoney
+    contact
     poster
     startDate
     endDate

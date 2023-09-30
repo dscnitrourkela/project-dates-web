@@ -2,15 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import styled from '@emotion/styled';
 import MenuIcon from '@mui/icons-material/Menu';
-import {
-  AppBar,
-  AppBarProps,
-  Avatar,
-  Box,
-  IconButton,
-  Toolbar,
-  Tooltip
-} from '@mui/material';
+import { AppBar, AppBarProps, Avatar, Box, IconButton, Toolbar, Tooltip } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -19,10 +11,7 @@ import { Theme } from '@mui/material/styles';
 
 import { UserCircle as UserCircleIcon } from 'icons/user-circle';
 
-import {
-  OrgQuery,
-  useOrgLazyQuery
-} from '../graphql/graphql-types';
+import { OrgQuery, useOrgLazyQuery } from '../graphql/graphql-types';
 import { useAuthContext } from '../store/contexts';
 import { useOrgContext } from '../store/contexts/org.context';
 import { AccountPopover } from './account-popover';

@@ -7,15 +7,19 @@ import {
   CardProps,
   Divider,
   Grid,
-  Typography
+  IconButton,
+  Typography,
 } from '@mui/material';
 
 import { format } from 'date-fns';
 
-import { EventQuery } from '../../graphql/graphql-types';
+import { EventQuery, StatusType, useUpdateEventMutation } from '../../graphql/graphql-types';
 import { Clock as ClockIcon } from '../../icons/clock';
 import { Users as UsersIcon } from '../../icons/users';
 import ProductEditModal from './product-edit-modal';
+import { Delete } from '@mui/icons-material';
+import { toast } from 'react-toastify';
+import { useOrgContext } from 'store/contexts/org.context';
 
 export interface IProductCard extends CardProps {
   event: EventQuery['event'][0];
@@ -24,20 +28,50 @@ export interface IProductCard extends CardProps {
 
 export const ProductCard: React.FC<IProductCard> = ({ event, refetchEvents, ...rest }) => {
   const [openModal, setOpenModal] = useState(false);
+  const { org } = useOrgContext();
+
+  const [updateEvent] = useUpdateEventMutation();
+
+  const handleDelete = async () => {
+    try {
+      await updateEvent({
+        variables: {
+          updateEventId: event?.id,
+          orgId: org?.id,
+          event: {
+            status: StatusType.Expired,
+          },
+        },
+      });
+      refetchEvents();
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   return (
     <>
       <Card
-        onClick={() => setOpenModal(true)}
         sx={{
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
           cursor: 'pointer',
+          position: 'relative',
         }}
         {...rest}
       >
-        <CardContent sx={{ padding: '0 !important' }}>
+        <IconButton
+          sx={{
+            position: 'absolute',
+            top: '0.5rem',
+            right: '0.5rem',
+          }}
+          onClick={handleDelete}
+        >
+          <Delete />
+        </IconButton>
+        <CardContent sx={{ padding: '0 !important' }} onClick={() => setOpenModal(true)}>
           <Box
             sx={{
               display: 'flex',
@@ -58,7 +92,7 @@ export const ProductCard: React.FC<IProductCard> = ({ event, refetchEvents, ...r
             />
           </Box>
           <Typography align="center" color="textPrimary" gutterBottom variant="h5">
-            {JSON.parse(event.name).heading}
+            {event.name}
           </Typography>
         </CardContent>
 

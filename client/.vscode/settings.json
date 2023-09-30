@@ -38,7 +38,7 @@
   "npm.runSilent": false,
   "explorer.confirmDragAndDrop": false,
   "editor.formatOnPaste": false,
-  "editor.cursorSmoothCaretAnimation": false,
+  "editor.cursorSmoothCaretAnimation": "off",
   "editor.smoothScrolling": false,
   "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.count": 60,
   "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.type": "newLineEachExpressionAfterCountLimitExceptIfOnlyOne",
