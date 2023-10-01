@@ -53,6 +53,10 @@ export const DashboardNavbar: React.FC<IDashboardNavbar> = ({ onSidebarOpen, ...
     setOrg(selectedOrg[0]);
   };
 
+  const handleOpenModal = () => {
+    if (user?.permissions?.superAdmin) setOpenCreateOrgModal(true);
+  };
+
   // @ts-ignore
   useEffect(() => {
     (async () => {
@@ -130,9 +134,10 @@ export const DashboardNavbar: React.FC<IDashboardNavbar> = ({ onSidebarOpen, ...
                 sm: 'inherit',
               },
             }}
+            disabled={!user?.permissions?.superAdmin}
             size="small"
             startIcon={<AddCircleOutlineOutlined />}
-            onClick={() => setOpenCreateOrgModal(true)}
+            onClick={handleOpenModal}
           >
             Add Organisation
           </Button>
