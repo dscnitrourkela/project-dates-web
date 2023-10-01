@@ -32,17 +32,28 @@ const Page = () => {
     return eventTypes;
   }, [eventData]);
 
+  const status = useMemo(() => {
+    const eventStatus = ['All'];
+    eventData?.event.forEach(({ status: currStatus }) => {
+      if (!eventStatus.includes(currStatus)) eventStatus.push(currStatus);
+    });
+    return eventStatus;
+  }, [eventData]);
+
   const filterEvents = (type = '') => {
-    setFilteredEvents(eventData.event.filter((event) => event.type === type.toUpperCase()));
+    setFilteredEvents(
+      eventData.event.filter(
+        (event) => event.type === type.toUpperCase() || event.status === type.toUpperCase(),
+      ),
+    );
   };
 
   const searchEvents = (query: string) => {
     setFilteredEvents(
-      eventData.event.filter(({ name }) => {
-        const parsedName = JSON.parse(name);
+      eventData.event.filter(({ name, subHeading }) => {
         return (
-          parsedName.heading.toLowerCase().search(query.toLowerCase()) !== -1 ||
-          parsedName.subHeading.toLowerCase().search(query.toLowerCase()) !== -1
+          name?.toLowerCase().search(query.toLowerCase()) !== -1 ||
+          subHeading?.toLowerCase().search(query.toLowerCase()) !== -1
         );
       }),
     );
@@ -68,6 +79,8 @@ const Page = () => {
             searchEvents={searchEvents}
             filterEvents={filterEvents}
             types={types}
+            status={status}
+            refetchEvents={refetch}
           />
           <Box sx={{ pt: 3 }}>
             <Grid container spacing={3}>

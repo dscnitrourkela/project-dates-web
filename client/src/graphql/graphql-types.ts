@@ -39,6 +39,7 @@ export type DeveloperInfoUpdateInputType = {
 /** Refers to the various events created by the different organisations */
 export type Event = {
   __typename?: 'Event';
+  contact?: Maybe<Array<Scalars['String']>>;
   description: Scalars['String'];
   endDate: Scalars['DateTime'];
   eventRegistration: Array<Maybe<EventRegistration>>;
@@ -55,15 +56,18 @@ export type Event = {
   pocID: Array<Scalars['ID']>;
   poster: Scalars['String'];
   priority: Scalars['Int'];
+  prizeMoney?: Maybe<Scalars['String']>;
   repeatDay?: Maybe<RepeatType>;
   startDate: Scalars['DateTime'];
   status: StatusType;
+  subHeading?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
   weekly: Scalars['Boolean'];
 };
 
 /** Input arguments used in createEvent mutation */
 export type EventCreateInputType = {
+  contact: Array<Scalars['String']>;
   description: Scalars['String'];
   endDate: Scalars['DateTime'];
   locationID?: InputMaybe<Scalars['ID']>;
@@ -74,9 +78,11 @@ export type EventCreateInputType = {
   pocID: Array<Scalars['ID']>;
   poster: Scalars['String'];
   priority: Scalars['Int'];
+  prizeMoney?: InputMaybe<Scalars['String']>;
   repeatDay?: InputMaybe<RepeatType>;
   startDate: Scalars['DateTime'];
   status?: InputMaybe<StatusType>;
+  subHeading?: InputMaybe<Scalars['String']>;
   type?: InputMaybe<Scalars['String']>;
   weekly: Scalars['Boolean'];
 };
@@ -99,6 +105,7 @@ export type EventRegistrationCreateInputType = {
 
 /** Input arguments used in updateEvent mutation */
 export type EventUpdateInputType = {
+  contact?: InputMaybe<Array<Scalars['String']>>;
   description?: InputMaybe<Scalars['String']>;
   endDate?: InputMaybe<Scalars['DateTime']>;
   locationID?: InputMaybe<Scalars['ID']>;
@@ -109,9 +116,11 @@ export type EventUpdateInputType = {
   pocID?: InputMaybe<Array<Scalars['ID']>>;
   poster?: InputMaybe<Scalars['String']>;
   priority?: InputMaybe<Scalars['Int']>;
+  prizeMoney?: InputMaybe<Scalars['String']>;
   repeatDay?: InputMaybe<RepeatType>;
   startDate?: InputMaybe<Scalars['DateTime']>;
   status?: InputMaybe<StatusType>;
+  subHeading?: InputMaybe<Scalars['String']>;
   type?: InputMaybe<Scalars['String']>;
   weekly?: InputMaybe<Scalars['Boolean']>;
 };
@@ -633,6 +642,14 @@ export type PaginationInputType = {
   take?: Scalars['Int'];
 };
 
+export type CreateEventMutationVariables = Exact<{
+  orgId: Scalars['ID'];
+  event: EventCreateInputType;
+}>;
+
+
+export type CreateEventMutation = { __typename?: 'Mutation', createEvent?: { __typename?: 'Event', name: string, description: string } | null };
+
 export type UpdateEventMutationVariables = Exact<{
   updateEventId: Scalars['ID'];
   orgId: Scalars['ID'];
@@ -641,6 +658,13 @@ export type UpdateEventMutationVariables = Exact<{
 
 
 export type UpdateEventMutation = { __typename?: 'Mutation', updateEvent?: { __typename?: 'Event', name: string, description: string } | null };
+
+export type CreateOrgMutationVariables = Exact<{
+  org: OrgCreateInputType;
+}>;
+
+
+export type CreateOrgMutation = { __typename?: 'Mutation', createOrg?: { __typename?: 'Org', name: string, description: string } | null };
 
 export type UpdateUserMutationVariables = Exact<{
   updateUserId: Scalars['ID'];
@@ -660,7 +684,7 @@ export type EventQueryVariables = Exact<{
 }>;
 
 
-export type EventQuery = { __typename?: 'Query', event?: Array<{ __typename?: 'Event', id: string, name: string, description: string, poster: string, startDate: any, endDate: any, notes: Array<string>, orgType: OrgType, weekly: boolean, repeatDay?: RepeatType | null, priority: number, type?: string | null, status: StatusType, locationID: string, orgID: Array<string>, eventRegistrationCount: number } | null> | null };
+export type EventQuery = { __typename?: 'Query', event?: Array<{ __typename?: 'Event', id: string, name: string, subHeading?: string | null, description: string, prizeMoney?: string | null, contact?: Array<string> | null, poster: string, startDate: any, endDate: any, notes: Array<string>, orgType: OrgType, weekly: boolean, repeatDay?: RepeatType | null, priority: number, type?: string | null, status: StatusType, locationID: string, orgID: Array<string>, eventRegistrationCount: number } | null> | null };
 
 export type EventRegistrationQueryVariables = Exact<{
   eventId?: InputMaybe<Scalars['ID']>;
@@ -711,6 +735,41 @@ export type UserQueryVariables = Exact<{
 export type UserQuery = { __typename?: 'Query', user?: Array<{ __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, festID: Array<string>, createdAt?: any | null, ca: Array<string>, referredBy?: string | null, fests: Array<{ __typename?: 'Org', name: string, description: string }> } | null> | null };
 
 
+export const CreateEventDocument = gql`
+    mutation CreateEvent($orgId: ID!, $event: EventCreateInputType!) {
+  createEvent(orgID: $orgId, event: $event) {
+    name
+    description
+  }
+}
+    `;
+export type CreateEventMutationFn = Apollo.MutationFunction<CreateEventMutation, CreateEventMutationVariables>;
+
+/**
+ * __useCreateEventMutation__
+ *
+ * To run a mutation, you first call `useCreateEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createEventMutation, { data, loading, error }] = useCreateEventMutation({
+ *   variables: {
+ *      orgId: // value for 'orgId'
+ *      event: // value for 'event'
+ *   },
+ * });
+ */
+export function useCreateEventMutation(baseOptions?: Apollo.MutationHookOptions<CreateEventMutation, CreateEventMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateEventMutation, CreateEventMutationVariables>(CreateEventDocument, options);
+      }
+export type CreateEventMutationHookResult = ReturnType<typeof useCreateEventMutation>;
+export type CreateEventMutationResult = Apollo.MutationResult<CreateEventMutation>;
+export type CreateEventMutationOptions = Apollo.BaseMutationOptions<CreateEventMutation, CreateEventMutationVariables>;
 export const UpdateEventDocument = gql`
     mutation UpdateEvent($updateEventId: ID!, $orgId: ID!, $event: EventUpdateInputType!) {
   updateEvent(id: $updateEventId, orgID: $orgId, event: $event) {
@@ -747,6 +806,40 @@ export function useUpdateEventMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateEventMutationHookResult = ReturnType<typeof useUpdateEventMutation>;
 export type UpdateEventMutationResult = Apollo.MutationResult<UpdateEventMutation>;
 export type UpdateEventMutationOptions = Apollo.BaseMutationOptions<UpdateEventMutation, UpdateEventMutationVariables>;
+export const CreateOrgDocument = gql`
+    mutation CreateOrg($org: OrgCreateInputType!) {
+  createOrg(org: $org) {
+    name
+    description
+  }
+}
+    `;
+export type CreateOrgMutationFn = Apollo.MutationFunction<CreateOrgMutation, CreateOrgMutationVariables>;
+
+/**
+ * __useCreateOrgMutation__
+ *
+ * To run a mutation, you first call `useCreateOrgMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrgMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrgMutation, { data, loading, error }] = useCreateOrgMutation({
+ *   variables: {
+ *      org: // value for 'org'
+ *   },
+ * });
+ */
+export function useCreateOrgMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrgMutation, CreateOrgMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateOrgMutation, CreateOrgMutationVariables>(CreateOrgDocument, options);
+      }
+export type CreateOrgMutationHookResult = ReturnType<typeof useCreateOrgMutation>;
+export type CreateOrgMutationResult = Apollo.MutationResult<CreateOrgMutation>;
+export type CreateOrgMutationOptions = Apollo.BaseMutationOptions<CreateOrgMutation, CreateOrgMutationVariables>;
 export const UpdateUserDocument = gql`
     mutation UpdateUser($updateUserId: ID!, $user: UserUpdateInputType!) {
   updateUser(id: $updateUserId, user: $user) {
@@ -793,7 +886,10 @@ export const EventDocument = gql`
   ) {
     id
     name
+    subHeading
     description
+    prizeMoney
+    contact
     poster
     startDate
     endDate

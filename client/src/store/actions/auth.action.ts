@@ -13,7 +13,7 @@ export interface IUser {
   rollNumber?: string;
   accessToken: string;
   uid: string;
-  permissions?: Record<string, unknown>;
+  permissions?: Record<string, boolean | string[]>;
   userID?: string;
 }
 

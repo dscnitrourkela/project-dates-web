@@ -1,0 +1,6 @@
+mutation CreateOrg($org: OrgCreateInputType!) {
+  createOrg(org: $org) {
+    name
+    description
+  }
+}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { MouseEvent, useState } from 'react';
 
 import {
   Box,
@@ -7,15 +7,19 @@ import {
   CardProps,
   Divider,
   Grid,
-  Typography
+  IconButton,
+  Typography,
 } from '@mui/material';
 
 import { format } from 'date-fns';
 
-import { EventQuery } from '../../graphql/graphql-types';
+import { EventQuery, StatusType, useUpdateEventMutation } from '../../graphql/graphql-types';
 import { Clock as ClockIcon } from '../../icons/clock';
 import { Users as UsersIcon } from '../../icons/users';
 import ProductEditModal from './product-edit-modal';
+import { Delete } from '@mui/icons-material';
+import { toast } from 'react-toastify';
+import { useOrgContext } from 'store/contexts/org.context';
 
 export interface IProductCard extends CardProps {
   event: EventQuery['event'][0];
@@ -24,6 +28,29 @@ export interface IProductCard extends CardProps {
 
 export const ProductCard: React.FC<IProductCard> = ({ event, refetchEvents, ...rest }) => {
   const [openModal, setOpenModal] = useState(false);
+  const { org } = useOrgContext();
+
+  const [updateEvent] = useUpdateEventMutation();
+
+  const handleDelete = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    try {
+      await updateEvent({
+        variables: {
+          updateEventId: event?.id,
+          orgId: org?.id,
+          event: {
+            status: StatusType.Expired,
+          },
+        },
+      });
+      refetchEvents();
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   return (
     <>
@@ -34,9 +61,21 @@ export const ProductCard: React.FC<IProductCard> = ({ event, refetchEvents, ...r
           flexDirection: 'column',
           height: '100%',
           cursor: 'pointer',
+          position: 'relative',
         }}
         {...rest}
       >
+        <IconButton
+          sx={{
+            position: 'absolute',
+            top: '0.5rem',
+            right: '0.5rem',
+            zIndex: 100,
+          }}
+          onClick={handleDelete}
+        >
+          <Delete />
+        </IconButton>
         <CardContent sx={{ padding: '0 !important' }}>
           <Box
             sx={{
@@ -58,13 +97,16 @@ export const ProductCard: React.FC<IProductCard> = ({ event, refetchEvents, ...r
             />
           </Box>
           <Typography align="center" color="textPrimary" gutterBottom variant="h5">
-            {JSON.parse(event.name).heading}
+            {event.name}
           </Typography>
         </CardContent>
 
         <CardContent sx={{ paddingTop: '0px !important' }}>
           <Typography align="center" color="textPrimary" variant="body1">
-            {`${JSON.parse(event.description)[0].desc}`.substring(0, 50)}...
+            {`${JSON.parse(event.description)[0]?.desc}` === 'undefined'
+              ? ''
+              : `${JSON.parse(event.description)[0]?.desc}`.substring(0, 50)}
+            ...
           </Typography>
         </CardContent>
 
