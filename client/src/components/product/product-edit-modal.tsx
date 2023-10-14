@@ -77,6 +77,7 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
     poster,
     type,
     status,
+    priority,
   } = event;
   const [values, setValues] = useState({
     name,
@@ -90,6 +91,7 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
     contact,
     poster,
     type,
+    priority: priority.toString(),
     status,
   });
 
@@ -150,6 +152,7 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
                 desc: value,
               })),
             ),
+            priority: parseInt(values.priority),
             poster: values.poster,
           },
         },
@@ -369,6 +372,19 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
                 ))}
               </Select>
             </FormControl>
+
+            <TextField
+              fullWidth
+              label="Priority of Event"
+              name="priority"
+              onChange={handleChange}
+              sx={{
+                marginTop: '1rem',
+                width: '100%',
+              }}
+              value={values.priority}
+              disabled={stage === STAGES.VIEW}
+            />
 
             <FormControl
               disabled={stage === STAGES.VIEW}

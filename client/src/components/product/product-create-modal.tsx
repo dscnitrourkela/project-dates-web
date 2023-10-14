@@ -52,6 +52,7 @@ const ProductCreateModal: React.FC<IProductCreateModal> = ({
     prizes: '',
     contact: [],
     type: '',
+    priority: '0',
     status: 'DRAFT',
   });
 
@@ -115,7 +116,7 @@ const ProductCreateModal: React.FC<IProductCreateModal> = ({
             orgID: [org?.id],
             orgType: org?.orgType,
             pocID: [],
-            priority: 0,
+            priority: parseInt(values.priority),
             weekly: false,
             status: StatusType.Active,
           },
@@ -315,6 +316,18 @@ const ProductCreateModal: React.FC<IProductCreateModal> = ({
               ))}
             </Select>
           </FormControl>
+
+          <TextField
+            fullWidth
+            label="Priority of Event"
+            name="priority"
+            onChange={handleChange}
+            sx={{
+              marginTop: '1rem',
+              width: '100%',
+            }}
+            value={values.priority}
+          />
 
           <FormControl fullWidth sx={{ marginTop: '1rem' }} variant="outlined">
             <InputLabel id="demo-simple-select-label" required>
