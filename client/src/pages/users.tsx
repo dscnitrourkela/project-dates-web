@@ -1,14 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
 
-import {
-  Box,
-  Container,
-  Tab,
-  Tabs,
-  TextField,
-  Typography
-} from '@mui/material';
+import { Box, Container, Tab, Tabs, TextField, Typography } from '@mui/material';
 
 import Head from 'next/head';
 
@@ -55,13 +48,12 @@ const Page = () => {
       updateQuery: (prev, { fetchMoreResult, ...rest }) => {
         if (!fetchMoreResult) return prev;
 
-        return {
-          ...fetchMoreResult,
-          launches: {
-            ...fetchMoreResult.user,
-            launches: [...prev.user, ...fetchMoreResult.user],
+        return Object.assign({}, prev, {
+          user: {
+            ...prev.user,
+            data: fetchMoreResult.user.data,
           },
-        };
+        });
       },
     });
   };

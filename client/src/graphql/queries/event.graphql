@@ -19,6 +19,7 @@ query Event(
     subHeading
     description
     prizeMoney
+    rules
     contact
     poster
     startDate

@@ -45,7 +45,7 @@ export const RegisteredUserList: React.FC<IRegisteredUserList> = ({ eventId, ...
               sort: true,
               serverSide: true,
               search: false,
-              pagination: true,
+              pagination: false,
               filterType: 'dropdown',
               selectableRows: 'none',
               rowsPerPage: 10,

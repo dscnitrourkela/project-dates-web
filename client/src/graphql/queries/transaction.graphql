@@ -12,14 +12,17 @@ query Transaction(
     type: $type
     id: $transactionId
   ) {
-    amount
-    transactionID
-    type
-    timestamp
-    user {
-      name
-      email
-      mobile
+    data {
+      amount
+      transactionID
+      type
+      timestamp
+      user {
+        name
+        email
+        mobile
+      }
     }
+    count
   }
 }

@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import {
-  Box,
-  Button,
-  Card,
-  SvgIcon,
-  TextField,
-  Typography
-} from '@mui/material';
+import { Box, Button, Card, SvgIcon, TextField, Typography } from '@mui/material';
 
 import { Search as SearchIcon } from 'icons/search';
 
@@ -16,7 +9,7 @@ import { AccountProfileDetails } from '../../components/account/account-profile-
 import {
   useEventRegistrationLazyQuery,
   UserQuery,
-  useUserLazyQuery
+  useUserLazyQuery,
 } from '../../graphql/graphql-types';
 import { useOrgContext } from '../../store/contexts/org.context';
 
@@ -32,7 +25,7 @@ const UserSearch = ({ eventId }) => {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState(false);
   const [userLoading, setUserLoading] = useState(false);
-  const [user, setUser] = useState<UserQuery['user'][0] | undefined>();
+  const [user, setUser] = useState<UserQuery['user']['data'][0] | undefined>();
   const [notRegistered, setNotRegister] = useState(false);
   const [notRegisteredForInno, setNotRegisteredForInno] = useState(false);
   const [fetchUser] = useUserLazyQuery();
@@ -51,7 +44,7 @@ const UserSearch = ({ eventId }) => {
         },
       });
 
-      if (!userData.user.length) {
+      if (!userData.user.data.length) {
         setUserLoading(false);
         return setNotRegisteredForInno(true);
       }
@@ -59,13 +52,13 @@ const UserSearch = ({ eventId }) => {
       const { data } = await fetchUserRegistration({
         variables: {
           eventId,
-          userId: userData.user[0].id,
+          userId: userData.user.data[0].id,
         },
       });
 
       if (data.eventRegistration.length) {
         setUserLoading(false);
-        return setUser(userData.user[0]);
+        return setUser(userData.user.data[0]);
       }
 
       setUserLoading(false);

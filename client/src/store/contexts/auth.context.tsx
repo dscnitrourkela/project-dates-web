@@ -1,10 +1,5 @@
 /* eslint-disable no-console */
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useReducer
-} from 'react';
+import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import { toast } from 'react-toastify';
 
 import {
@@ -12,23 +7,16 @@ import {
   GoogleAuthProvider,
   onAuthStateChanged,
   onIdTokenChanged,
-  signInWithPopup
+  signInWithPopup,
 } from 'firebase/auth';
 import Router, { useRouter } from 'next/router';
 
 import { useUserLazyQuery } from '../../graphql/graphql-types';
 import { avenueApi } from '../../lib/api';
-import {
-  getApolloLink,
-  GraphQLClient
-} from '../../lib/apollo';
+import { getApolloLink, GraphQLClient } from '../../lib/apollo';
 import { app } from '../../lib/firebase';
 import { AUTH_ACTION_TYPE } from '../actions';
-import {
-  authInitialState,
-  AuthInitialState,
-  authReducer
-} from '../reducers';
+import { authInitialState, AuthInitialState, authReducer } from '../reducers';
 
 interface AuthContextType extends AuthInitialState {
   signIn: () => Promise<void>;
@@ -123,7 +111,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => 
             },
           });
 
-          if (!userData.user.length) return toast.error('User unauthorized to access Dashboard');
+          if (!userData.user.data.length)
+            return toast.error('User unauthorized to access Dashboard');
 
           const { data: userPermissions } = await avenueApi.get('/auth', {
             headers: {
@@ -138,8 +127,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = (props) => 
               firebase: user,
               uid: user.uid,
               permissions: userPermissions?.permissions,
-              userID: userData.user[0].id,
-              ...userData.user[0],
+              userID: userData?.user.data[0].id,
+              ...userData.user?.data[0],
             },
           });
           const { continueUrl } = query;

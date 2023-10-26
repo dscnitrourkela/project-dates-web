@@ -11,7 +11,7 @@ import {
   Divider,
   FormControlLabel,
   Grid,
-  Typography
+  Typography,
 } from '@mui/material';
 
 import { UserQuery } from '../../graphql/graphql-types';
@@ -20,7 +20,7 @@ import { useAuthContext } from '../../store/contexts';
 import { useOrgContext } from '../../store/contexts/org.context';
 
 export interface ISettingsNotifications {
-  searchedUser: UserQuery['user'][0];
+  searchedUser: UserQuery['user']['data'][0];
 }
 
 export const SettingsNotifications: React.FC<ISettingsNotifications> = ({ searchedUser }) => {

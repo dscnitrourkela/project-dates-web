@@ -49,6 +49,7 @@ const ProductCreateModal: React.FC<IProductCreateModal> = ({
     startDate: new Date().toISOString(),
     endDate: new Date().toISOString(),
     poster: '',
+    rules: '',
     prizes: '',
     contact: [],
     type: '',
@@ -111,6 +112,7 @@ const ProductCreateModal: React.FC<IProductCreateModal> = ({
               })),
             ),
             poster: values.poster,
+            rules: values.rules,
             notes: [],
             type: values.type,
             orgID: [org?.id],
@@ -246,6 +248,19 @@ const ProductCreateModal: React.FC<IProductCreateModal> = ({
               marginTop: '1rem',
             }}
           />
+
+          <TextField
+            fullWidth
+            label="Rule Book URL"
+            name="rules"
+            onChange={handleChange}
+            value={values.rules}
+            variant="outlined"
+            sx={{
+              marginTop: '1rem',
+            }}
+          />
+
           {values.contact.map((value, index) => (
             <Box sx={{ display: 'flex', alignItems: 'center' }} key={index}>
               <TextField

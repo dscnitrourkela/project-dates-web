@@ -11,13 +11,10 @@ import {
   CircularProgress,
   Divider,
   Grid,
-  TextField
+  TextField,
 } from '@mui/material';
 
-import {
-  UserQuery,
-  useUpdateUserMutation
-} from '../../graphql/graphql-types';
+import { UserQuery, useUpdateUserMutation } from '../../graphql/graphql-types';
 import { useOrgContext } from '../../store/contexts/org.context';
 
 const genderOptions = [
@@ -36,7 +33,7 @@ const genderOptions = [
 ];
 
 export interface IAccountProfileDetails {
-  user: UserQuery['user'][0];
+  user: UserQuery['user']['data'][0];
   disableAll?: boolean;
   checkUserIn?: () => void;
 }

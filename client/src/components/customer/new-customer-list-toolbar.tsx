@@ -17,7 +17,7 @@ import {
   ListItemIcon,
   ListItemText,
   SvgIcon,
-  TextField
+  TextField,
 } from '@mui/material';
 
 import { Search as SearchIcon } from 'icons/search';
@@ -26,7 +26,7 @@ import {
   TransactionQuery,
   UserQuery,
   useTransactionLazyQuery,
-  useUserLazyQuery
+  useUserLazyQuery,
 } from '../../graphql/graphql-types';
 import { useOrgContext } from '../../store/contexts/org.context';
 import { AccountProfile } from '../account/account-profile';
@@ -45,8 +45,10 @@ export const NewCustomerListToolbar = () => {
   const [emailError, setEmailError] = useState(false);
   const [userLoading, setUserLoading] = useState(false);
   const [txnLoading, setTxnLoading] = useState(false);
-  const [user, setUser] = useState<UserQuery['user'][0] | undefined>();
-  const [transaction, setTransaction] = useState<TransactionQuery['transaction'][0] | undefined>();
+  const [user, setUser] = useState<UserQuery['user']['data'][0] | undefined>();
+  const [transaction, setTransaction] = useState<
+    TransactionQuery['transaction']['data'][0] | undefined
+  >();
 
   const [fetchUser] = useUserLazyQuery();
   const [fetchTransactionDetails] = useTransactionLazyQuery();
@@ -54,7 +56,7 @@ export const NewCustomerListToolbar = () => {
   const checkUserIn = () => {
     setUser((current) => ({
       ...current,
-      ca: ['innovision-2022'],
+      ca: ['innovision-2023'],
     }));
   };
 
@@ -62,26 +64,30 @@ export const NewCustomerListToolbar = () => {
     try {
       setUserLoading(true);
       setTxnLoading(true);
-      const { data } = await fetchUser({
+      const {
+        data: { user: users },
+      } = await fetchUser({
         variables: {
           email,
           orgID: org.id,
         },
       });
 
-      if (!data.user[0]) {
+      if (!users?.data[0]) {
         throw new Error('User not registered for Innovision 2022');
       }
-      setUser(data.user[0]);
+      setUser(users?.data[0]);
       setUserLoading(false);
 
-      const { data: txnData } = await fetchTransactionDetails({
+      const {
+        data: { transaction: txnData },
+      } = await fetchTransactionDetails({
         variables: {
-          userID: data.user[0]?.id,
+          userID: users?.data[0]?.id,
           orgID: org.id,
         },
       });
-      setTransaction(txnData?.transaction[0]);
+      setTransaction(txnData?.data[0]);
       setTxnLoading(false);
     } catch (error) {
       toast.error(error.message);

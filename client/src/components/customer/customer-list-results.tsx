@@ -17,7 +17,7 @@ export const CustomerListResults: React.FC<ICustomerListResults> = ({
   onPageChange,
   ...rest
 }) => {
-  const users = userData.user;
+  const users = userData.user.data;
   const [pageNumber, setPageNumber] = useState<number | undefined>(0);
   const [rowNumber, setRowNumber] = useState(10);
 
@@ -41,7 +41,7 @@ export const CustomerListResults: React.FC<ICustomerListResults> = ({
               ),
             ]}
             options={{
-              count: 7000,
+              count: userData.user.count || 0,
               filter: true,
               sort: true,
               serverSide: true,
@@ -49,14 +49,14 @@ export const CustomerListResults: React.FC<ICustomerListResults> = ({
               pagination: true,
               filterType: 'dropdown',
               selectableRows: 'none',
-              rowsPerPage: 10,
-              rowsPerPageOptions: [10],
+              rowsPerPage: rowNumber,
+              rowsPerPageOptions: [10, 50, 500, 1000],
               onChangePage: (currentPageNumber: number) => {
                 onPageChange(currentPageNumber, rowNumber);
                 setPageNumber(currentPageNumber);
               },
               onChangeRowsPerPage: (currentRowNumber: number) => {
-                onPageChange(pageNumber, rowNumber);
+                onPageChange(pageNumber, currentRowNumber);
                 setRowNumber(currentRowNumber);
               },
             }}

@@ -34,7 +34,7 @@ const Page = () => {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState(false);
   const [userLoading, setUserLoading] = useState(false);
-  const [user, setUser] = useState<UserQuery['user'][0] | undefined>();
+  const [user, setUser] = useState<UserQuery['user']['data'][0] | undefined>();
   const [fetchUser] = useUserLazyQuery();
 
   const onSearchClick = async () => {
@@ -45,7 +45,7 @@ const Page = () => {
           email,
         },
       });
-      setUser(data.user[0]);
+      setUser(data.user.data[0]);
       setUserLoading(false);
     } catch (error) {
       toast.error(error.message);
