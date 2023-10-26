@@ -26,27 +26,30 @@ query User(
     pagination: $pagination
     orgID: $orgID
   ) {
-    email
-    id
-    uid
-    name
-    photo
-    gender
-    dob
-    state
-    city
-    college
-    stream
-    mobile
-    selfID
-    rollNumber
-    festID
-    createdAt
-    fests {
+    data {
+      email
+      id
+      uid
       name
-      description
+      photo
+      gender
+      dob
+      state
+      city
+      college
+      stream
+      mobile
+      selfID
+      rollNumber
+      festID
+      createdAt
+      fests {
+        name
+        description
+      }
+      ca
+      referredBy
     }
-    ca
-    referredBy
+    count
   }
 }

@@ -58,6 +58,7 @@ export type Event = {
   priority: Scalars['Int'];
   prizeMoney?: Maybe<Scalars['String']>;
   repeatDay?: Maybe<RepeatType>;
+  rules?: Maybe<Scalars['String']>;
   startDate: Scalars['DateTime'];
   status: StatusType;
   subHeading?: Maybe<Scalars['String']>;
@@ -80,6 +81,7 @@ export type EventCreateInputType = {
   priority: Scalars['Int'];
   prizeMoney?: InputMaybe<Scalars['String']>;
   repeatDay?: InputMaybe<RepeatType>;
+  rules?: InputMaybe<Scalars['String']>;
   startDate: Scalars['DateTime'];
   status?: InputMaybe<StatusType>;
   subHeading?: InputMaybe<Scalars['String']>;
@@ -118,6 +120,7 @@ export type EventUpdateInputType = {
   priority?: InputMaybe<Scalars['Int']>;
   prizeMoney?: InputMaybe<Scalars['String']>;
   repeatDay?: InputMaybe<RepeatType>;
+  rules?: InputMaybe<Scalars['String']>;
   startDate?: InputMaybe<Scalars['DateTime']>;
   status?: InputMaybe<StatusType>;
   subHeading?: InputMaybe<Scalars['String']>;
@@ -382,6 +385,20 @@ export type OrgUpdateInputType = {
   theme?: InputMaybe<Scalars['String']>;
 };
 
+/** Paginated response for transaction query */
+export type PaginatedTransactionType = {
+  __typename?: 'PaginatedTransactionType';
+  count?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<Maybe<Transaction>>>;
+};
+
+/** Paginated response for user query */
+export type PaginatedUserType = {
+  __typename?: 'PaginatedUserType';
+  count?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<Maybe<User>>>;
+};
+
 export type Query = {
   __typename?: 'Query';
   /** Returns a list of all the developers of the application */
@@ -399,9 +416,9 @@ export type Query = {
   /** Returns a list of all the team members of the given organsation */
   team?: Maybe<Array<Maybe<Team>>>;
   /** Returns a list of transactions depending upon the arguments passed */
-  transaction?: Maybe<Array<Maybe<Transaction>>>;
+  transaction?: Maybe<PaginatedTransactionType>;
   /** Returns a list of users depending upon the parameters passed */
-  user?: Maybe<Array<Maybe<User>>>;
+  user?: Maybe<PaginatedUserType>;
 };
 
 
@@ -440,6 +457,7 @@ export type QueryOrgArgs = {
   orgSubType?: InputMaybe<OrgSubType>;
   orgType?: InputMaybe<OrgType>;
   pagination?: InputMaybe<PaginationInputType>;
+  status?: InputMaybe<StatusType>;
 };
 
 
@@ -714,7 +732,7 @@ export type TransactionQueryVariables = Exact<{
 }>;
 
 
-export type TransactionQuery = { __typename?: 'Query', transaction?: Array<{ __typename?: 'Transaction', amount: number, transactionID: string, type: TransactionType, timestamp: any, user?: { __typename?: 'User', name?: string | null, email: string, mobile?: string | null } | null } | null> | null };
+export type TransactionQuery = { __typename?: 'Query', transaction?: { __typename?: 'PaginatedTransactionType', count?: number | null, data?: Array<{ __typename?: 'Transaction', amount: number, transactionID: string, type: TransactionType, timestamp: any, user?: { __typename?: 'User', name?: string | null, email: string, mobile?: string | null } | null } | null> | null } | null };
 
 export type UserQueryVariables = Exact<{
   festID?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
@@ -732,7 +750,7 @@ export type UserQueryVariables = Exact<{
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', user?: Array<{ __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, festID: Array<string>, createdAt?: any | null, ca: Array<string>, referredBy?: string | null, fests: Array<{ __typename?: 'Org', name: string, description: string }> } | null> | null };
+export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'PaginatedUserType', count?: number | null, data?: Array<{ __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, festID: Array<string>, createdAt?: any | null, ca: Array<string>, referredBy?: string | null, fests: Array<{ __typename?: 'Org', name: string, description: string }> } | null> | null } | null };
 
 
 export const CreateEventDocument = gql`
@@ -1058,15 +1076,18 @@ export const TransactionDocument = gql`
     type: $type
     id: $transactionId
   ) {
-    amount
-    transactionID
-    type
-    timestamp
-    user {
-      name
-      email
-      mobile
+    data {
+      amount
+      transactionID
+      type
+      timestamp
+      user {
+        name
+        email
+        mobile
+      }
     }
+    count
   }
 }
     `;
@@ -1118,28 +1139,31 @@ export const UserDocument = gql`
     pagination: $pagination
     orgID: $orgID
   ) {
-    email
-    id
-    uid
-    name
-    photo
-    gender
-    dob
-    state
-    city
-    college
-    stream
-    mobile
-    selfID
-    rollNumber
-    festID
-    createdAt
-    fests {
+    data {
+      email
+      id
+      uid
       name
-      description
+      photo
+      gender
+      dob
+      state
+      city
+      college
+      stream
+      mobile
+      selfID
+      rollNumber
+      festID
+      createdAt
+      fests {
+        name
+        description
+      }
+      ca
+      referredBy
     }
-    ca
-    referredBy
+    count
   }
 }
     `;

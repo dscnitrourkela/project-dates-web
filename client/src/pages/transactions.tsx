@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Box, Container, Typography } from '@mui/material';
 
@@ -37,13 +37,29 @@ const Transactions = () => {
       updateQuery: (prev, { fetchMoreResult, ...rest }) => {
         if (!fetchMoreResult) return prev;
 
-        return {
-          ...fetchMoreResult,
-          launches: {
-            ...fetchMoreResult.transaction,
-            launches: [...prev.transaction, ...fetchMoreResult.transaction],
+        const newData = fetchMoreResult.transaction.data;
+        const totalCount = fetchMoreResult.transaction.count;
+        const uniqueMap = new Map();
+        prev.transaction.data.forEach((item) => {
+          uniqueMap.set(item.transactionID, item);
+        });
+
+        // Add new items from fetchMoreResult, avoiding duplicates
+        newData.forEach((item) => {
+          if (!uniqueMap.has(item.transactionID)) {
+            uniqueMap.set(item.transactionID, item);
+          }
+        });
+
+        const uniqueData = Array.from(uniqueMap.values());
+
+        return Object.assign({}, prev, {
+          transaction: {
+            ...prev.transaction,
+            data: uniqueData,
+            count: totalCount,
           },
-        };
+        });
       },
     });
   };
@@ -56,20 +72,22 @@ const Transactions = () => {
       data && (
         <MUIDataTable
           title={'User List'}
-          data={data.transaction.map((transaction, index) => ({
+          data={data.transaction.data.map((transaction, index) => ({
             ...transaction,
             ...transaction.user,
-            '#': pageNumber * rowNumber + index + 1,
+            '#': index + 1,
           }))}
           columns={[
             '#',
-            ...Object.keys(data.transaction[0]).filter(
+            ...Object.keys(data.transaction.data[0]).filter(
               (key) => !['__typename', 'id', 'user'].includes(key),
             ),
-            ...Object.keys(data.transaction[0].user).filter((key) => !['__typename'].includes(key)),
+            ...Object.keys(data.transaction.data[0].user).filter(
+              (key) => !['__typename'].includes(key),
+            ),
           ]}
           options={{
-            count: 7000,
+            count: data.transaction.count || 0,
             filter: true,
             sort: true,
             serverSide: false,
@@ -77,14 +95,14 @@ const Transactions = () => {
             pagination: true,
             selectableRows: 'none',
             filterType: 'dropdown',
-            rowsPerPage: 10,
-            rowsPerPageOptions: [10],
+            rowsPerPage: rowNumber,
+            rowsPerPageOptions: [10, 50, 500, 1000],
             onChangePage: (currentPageNumber: number) => {
               onPageChange(currentPageNumber, rowNumber);
               setPageNumber(currentPageNumber);
             },
             onChangeRowsPerPage: (currentRowNumber: number) => {
-              onPageChange(pageNumber, rowNumber);
+              onPageChange(pageNumber, currentRowNumber);
               setRowNumber(currentRowNumber);
             },
           }}
