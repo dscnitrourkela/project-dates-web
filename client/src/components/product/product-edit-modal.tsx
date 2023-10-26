@@ -75,6 +75,7 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
     prizeMoney,
     contact,
     poster,
+    rules,
     type,
     status,
     priority,
@@ -88,6 +89,7 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
     startDate,
     endDate,
     prizes: prizeMoney,
+    rules,
     contact,
     poster,
     type,
@@ -154,6 +156,7 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
             ),
             priority: parseInt(values.priority),
             poster: values.poster,
+            rules: values.rules,
           },
         },
       });
@@ -286,6 +289,18 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
               onChange={handleChange}
               required
               value={values.poster}
+              variant="outlined"
+              sx={{
+                marginTop: '1rem',
+              }}
+            />
+            <TextField
+              disabled={stage === STAGES.VIEW}
+              fullWidth
+              label="Rule Book URL"
+              name="rules"
+              onChange={handleChange}
+              value={values.rules}
               variant="outlined"
               sx={{
                 marginTop: '1rem',

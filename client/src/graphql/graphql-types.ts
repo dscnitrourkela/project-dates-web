@@ -702,7 +702,7 @@ export type EventQueryVariables = Exact<{
 }>;
 
 
-export type EventQuery = { __typename?: 'Query', event?: Array<{ __typename?: 'Event', id: string, name: string, subHeading?: string | null, description: string, prizeMoney?: string | null, contact?: Array<string> | null, poster: string, startDate: any, endDate: any, notes: Array<string>, orgType: OrgType, weekly: boolean, repeatDay?: RepeatType | null, priority: number, type?: string | null, status: StatusType, locationID: string, orgID: Array<string>, eventRegistrationCount: number } | null> | null };
+export type EventQuery = { __typename?: 'Query', event?: Array<{ __typename?: 'Event', id: string, name: string, subHeading?: string | null, description: string, prizeMoney?: string | null, rules?: string | null, contact?: Array<string> | null, poster: string, startDate: any, endDate: any, notes: Array<string>, orgType: OrgType, weekly: boolean, repeatDay?: RepeatType | null, priority: number, type?: string | null, status: StatusType, locationID: string, orgID: Array<string>, eventRegistrationCount: number } | null> | null };
 
 export type EventRegistrationQueryVariables = Exact<{
   eventId?: InputMaybe<Scalars['ID']>;
@@ -907,6 +907,7 @@ export const EventDocument = gql`
     subHeading
     description
     prizeMoney
+    rules
     contact
     poster
     startDate
