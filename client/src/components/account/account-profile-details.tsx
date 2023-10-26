@@ -41,7 +41,6 @@ export interface IAccountProfileDetails {
 const initialState = {
   name: { value: '', disabled: false, full: true },
   email: { value: '', disabled: false, full: false },
-  mobile: { value: '', disabled: false, full: false },
   college: { value: '', disabled: false, full: false },
   stream: { value: '', disabled: false, full: false },
   rollNumber: { value: '', disabled: false, full: true },
@@ -105,8 +104,6 @@ export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({
       name: { value: user.name, disabled: disableAll || false, full: true },
 
       email: { value: user.email, disabled: disableAll || true, full: false },
-      mobile: { value: user.mobile, disabled: disableAll || true, full: false },
-
       college: {
         value: getNitrStudentDetails(isNitrStudent, 'college', user),
         disabled: disableAll || false,
