@@ -38,7 +38,6 @@ query User(
       city
       college
       stream
-      mobile
       selfID
       rollNumber
       festID

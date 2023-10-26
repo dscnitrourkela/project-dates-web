@@ -12,7 +12,6 @@ query EventRegistration($eventId: ID, $userId: ID, $eventRegistrationId: ID, $or
       city
       college
       stream
-      mobile
       selfID
       rollNumber
       ca
