@@ -125,7 +125,7 @@ const Transactions = () => {
       >
         <Container maxWidth={false}>
           {user?.permissions.superAdmin ||
-          (user?.permissions.orgAdmin as string[]).includes[org.id] ? (
+          (user?.permissions.orgAdmin as string[]).includes(org.id) ? (
             <Box sx={{ mt: 3 }}>{renderUsers()}</Box>
           ) : (
             <Typography>Not Authorized to view this Page</Typography>
