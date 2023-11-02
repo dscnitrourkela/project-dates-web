@@ -35,7 +35,7 @@ const genderOptions = [
 export interface IAccountProfileDetails {
   user: UserQuery['user']['data'][0];
   disableAll?: boolean;
-  checkUserIn?: () => void;
+  checkUserIn?: ({ selfID }: { selfID: string }) => void;
 }
 
 const initialState = {
@@ -48,6 +48,7 @@ const initialState = {
   state: { value: '', disabled: false, full: false },
   gender: { value: '', disabled: false, full: false, type: 'select' },
   referredBy: { value: '', disabled: false, full: false },
+  selfID: { value: '', disabled: false, full: false },
 };
 
 const getNitrStudentDetails = (isNitrStudent, key, user) => {
@@ -74,22 +75,28 @@ export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({
     variables: {
       updateUserId: user.id,
       user: {
-        ca: org.festID,
+        ca: org.festID + '-' + values.selfID.value,
       },
     },
   });
 
   const handleCheckIn = async () => {
-    if (user.ca.length > 0) {
-      return toast.info('User is already checked in');
+    if (user.ca.find((ca) => ca.includes(org.festID))) {
+      toast.error('User already checked in');
+      return;
+    } else if (!values.selfID.value) {
+      toast.error('Please enter a selfID');
+      return;
     }
 
     await updateUser();
-    checkUserIn();
+    checkUserIn({ selfID: values.selfID.value });
   };
 
   const handleInputChange = (e, key) => {
-    setDisabled(false);
+    if (key !== 'selfID') {
+      setDisabled(false);
+    }
     setValues((current) => ({
       ...current,
       [key]: {
@@ -110,6 +117,12 @@ export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({
         full: false,
       },
       stream: { value: user.stream, disabled: disableAll || false, full: false },
+      selfID: {
+        value:
+          user.ca.find((ca) => ca.includes(org.festID))?.substring(org.festID.length + 1) || '',
+        disabled: false,
+        full: false,
+      },
 
       rollNumber: { value: user.rollNumber, disabled: disableAll || true, full: true },
 
@@ -198,7 +211,7 @@ export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({
           >
             <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
               <Button
-                color={user.ca.length > 0 ? 'info' : 'primary'}
+                color={user.ca.find((ca) => ca.includes(org.festID)) ? 'info' : 'primary'}
                 variant="contained"
                 disabled={loading}
                 onClick={handleCheckIn}
@@ -207,7 +220,9 @@ export const AccountProfileDetails: React.FC<IAccountProfileDetails> = ({
                 {loading ? (
                   <CircularProgress size={20} />
                 ) : (
-                  <>{user.ca.length > 0 ? 'check in done' : 'check in'}</>
+                  <>
+                    {user.ca.find((ca) => ca.includes(org.festID)) ? 'check in done' : 'check in'}
+                  </>
                 )}
               </Button>
 

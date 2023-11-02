@@ -53,10 +53,10 @@ export const NewCustomerListToolbar = () => {
   const [fetchUser] = useUserLazyQuery();
   const [fetchTransactionDetails] = useTransactionLazyQuery();
 
-  const checkUserIn = () => {
+  const checkUserIn = ({ selfID }) => {
     setUser((current) => ({
       ...current,
-      ca: ['innovision-2023'],
+      ca: ['innovision-2023' + selfID],
     }));
   };
 
