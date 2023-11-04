@@ -56,7 +56,7 @@ export const NewCustomerListToolbar = () => {
   const checkUserIn = ({ selfID }) => {
     setUser((current) => ({
       ...current,
-      ca: ['innovision-2023' + selfID],
+      ca: ['innovision-2023-' + selfID],
     }));
   };
 

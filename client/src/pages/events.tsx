@@ -9,6 +9,7 @@ import { ProductCard } from '../components/product/product-card';
 import { ProductListToolbar } from '../components/product/product-list-toolbar';
 import { useEventQuery } from '../graphql/graphql-types';
 import { useOrgContext } from '../store/contexts/org.context';
+import { LocationProvider } from 'store/contexts/location.context';
 
 const Page = () => {
   const { org } = useOrgContext();
@@ -67,32 +68,34 @@ const Page = () => {
       <Head>
         <title>Events | Avenue Dashboard</title>
       </Head>
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          py: 8,
-        }}
-      >
-        <Container maxWidth={false}>
-          <ProductListToolbar
-            searchEvents={searchEvents}
-            filterEvents={filterEvents}
-            types={types}
-            status={status}
-            refetchEvents={refetch}
-          />
-          <Box sx={{ pt: 3 }}>
-            <Grid container spacing={3}>
-              {(filteredEvents.length ? filteredEvents : eventData.event).map((event) => (
-                <Grid item key={event.id} lg={4} md={6} xs={12}>
-                  <ProductCard event={event} refetchEvents={refetch} />
-                </Grid>
-              ))}
-            </Grid>
-          </Box>
-        </Container>
-      </Box>
+      <LocationProvider>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            py: 8,
+          }}
+        >
+          <Container maxWidth={false}>
+            <ProductListToolbar
+              searchEvents={searchEvents}
+              filterEvents={filterEvents}
+              types={types}
+              status={status}
+              refetchEvents={refetch}
+            />
+            <Box sx={{ pt: 3 }}>
+              <Grid container spacing={3}>
+                {(filteredEvents.length ? filteredEvents : eventData.event).map((event) => (
+                  <Grid item key={event.id} lg={4} md={6} xs={12}>
+                    <ProductCard event={event} refetchEvents={refetch} />
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+          </Container>
+        </Box>
+      </LocationProvider>
     </>
   );
 };

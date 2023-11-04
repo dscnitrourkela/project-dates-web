@@ -31,7 +31,10 @@ query Event(
     priority
     type
     status
-    locationID
+    location {
+      id
+      name
+    }
     orgID
     eventRegistrationCount
   }

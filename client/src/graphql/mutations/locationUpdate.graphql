@@ -1,0 +1,6 @@
+mutation updateLocation($id: ID!, $location: LocationUpdateInputType!) {
+  updateLocation(id: $id, location: $location) {
+    name
+    description
+  }
+}

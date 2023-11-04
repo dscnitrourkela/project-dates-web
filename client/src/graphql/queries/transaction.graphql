@@ -20,6 +20,9 @@ query Transaction(
       user {
         name
         email
+        college
+        gender
+        ca
       }
     }
     count
