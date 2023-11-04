@@ -1,0 +1,9 @@
+query location($id: ID) {
+  location(id: $id) {
+    id
+    name
+    description
+    lat
+    long
+  }
+}

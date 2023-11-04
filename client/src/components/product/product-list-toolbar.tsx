@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Box, Button, Card, CardContent, SvgIcon, TextField, Typography } from '@mui/material';
 import { BoxProps } from '@mui/system/Box';
@@ -9,6 +9,8 @@ import ProductCreateModal from './product-create-modal';
 import { useAuthContext } from 'store/contexts';
 import { useOrgContext } from 'store/contexts/org.context';
 import { toast } from 'react-toastify';
+import { useLocationContext } from 'store/contexts/location.context';
+import { useLocationQuery } from 'graphql/graphql-types';
 
 export interface IProductListToolbar extends BoxProps {
   filterEvents: (param: string) => void;
@@ -30,6 +32,12 @@ export const ProductListToolbar: React.FC<IProductListToolbar> = ({
   const [openModal, setOpenModal] = useState(false);
   const { user } = useAuthContext();
   const { org } = useOrgContext();
+  const { setLocations } = useLocationContext();
+  const { data: locationData } = useLocationQuery();
+
+  useEffect(() => {
+    setLocations(locationData?.location);
+  }, [locationData, setLocations]);
 
   const handleOpenModal = () => {
     if (

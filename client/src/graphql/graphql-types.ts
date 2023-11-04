@@ -677,6 +677,28 @@ export type UpdateEventMutationVariables = Exact<{
 
 export type UpdateEventMutation = { __typename?: 'Mutation', updateEvent?: { __typename?: 'Event', name: string, description: string } | null };
 
+export type CreateLocationMutationVariables = Exact<{
+  location: LocationCreateInputType;
+}>;
+
+
+export type CreateLocationMutation = { __typename?: 'Mutation', createLocation?: { __typename?: 'Location', id: string, name: string, description: string } | null };
+
+export type DeleteLocationMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DeleteLocationMutation = { __typename?: 'Mutation', deleteLocation?: { __typename?: 'Location', name: string } | null };
+
+export type UpdateLocationMutationVariables = Exact<{
+  id: Scalars['ID'];
+  location: LocationUpdateInputType;
+}>;
+
+
+export type UpdateLocationMutation = { __typename?: 'Mutation', updateLocation?: { __typename?: 'Location', name: string, description: string } | null };
+
 export type CreateOrgMutationVariables = Exact<{
   org: OrgCreateInputType;
 }>;
@@ -702,7 +724,7 @@ export type EventQueryVariables = Exact<{
 }>;
 
 
-export type EventQuery = { __typename?: 'Query', event?: Array<{ __typename?: 'Event', id: string, name: string, subHeading?: string | null, description: string, prizeMoney?: string | null, rules?: string | null, contact?: Array<string> | null, poster: string, startDate: any, endDate: any, notes: Array<string>, orgType: OrgType, weekly: boolean, repeatDay?: RepeatType | null, priority: number, type?: string | null, status: StatusType, locationID: string, orgID: Array<string>, eventRegistrationCount: number } | null> | null };
+export type EventQuery = { __typename?: 'Query', event?: Array<{ __typename?: 'Event', id: string, name: string, subHeading?: string | null, description: string, prizeMoney?: string | null, rules?: string | null, contact?: Array<string> | null, poster: string, startDate: any, endDate: any, notes: Array<string>, orgType: OrgType, weekly: boolean, repeatDay?: RepeatType | null, priority: number, type?: string | null, status: StatusType, orgID: Array<string>, eventRegistrationCount: number, location?: { __typename?: 'Location', id: string, name: string } | null } | null> | null };
 
 export type EventRegistrationQueryVariables = Exact<{
   eventId?: InputMaybe<Scalars['ID']>;
@@ -712,7 +734,14 @@ export type EventRegistrationQueryVariables = Exact<{
 }>;
 
 
-export type EventRegistrationQuery = { __typename?: 'Query', eventRegistration?: Array<{ __typename?: 'EventRegistration', user?: { __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, ca: Array<string>, referredBy?: string | null } | null } | null> | null };
+export type EventRegistrationQuery = { __typename?: 'Query', eventRegistration?: Array<{ __typename?: 'EventRegistration', user?: { __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, selfID?: string | null, rollNumber?: string | null, ca: Array<string>, referredBy?: string | null } | null } | null> | null };
+
+export type LocationQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['ID']>;
+}>;
+
+
+export type LocationQuery = { __typename?: 'Query', location?: Array<{ __typename?: 'Location', id: string, name: string, description: string, lat?: number | null, long?: number | null } | null> | null };
 
 export type OrgQueryVariables = Exact<{
   orgID?: InputMaybe<Scalars['ID']>;
@@ -732,7 +761,7 @@ export type TransactionQueryVariables = Exact<{
 }>;
 
 
-export type TransactionQuery = { __typename?: 'Query', transaction?: { __typename?: 'PaginatedTransactionType', count?: number | null, data?: Array<{ __typename?: 'Transaction', amount: number, transactionID: string, type: TransactionType, timestamp: any, user?: { __typename?: 'User', name?: string | null, email: string, mobile?: string | null } | null } | null> | null } | null };
+export type TransactionQuery = { __typename?: 'Query', transaction?: { __typename?: 'PaginatedTransactionType', count?: number | null, data?: Array<{ __typename?: 'Transaction', amount: number, transactionID: string, type: TransactionType, timestamp: any, user?: { __typename?: 'User', name?: string | null, email: string, college?: string | null, gender?: GenderType | null, ca: Array<string> } | null } | null> | null } | null };
 
 export type UserQueryVariables = Exact<{
   festID?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
@@ -750,7 +779,7 @@ export type UserQueryVariables = Exact<{
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'PaginatedUserType', count?: number | null, data?: Array<{ __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, mobile?: string | null, selfID?: string | null, rollNumber?: string | null, festID: Array<string>, createdAt?: any | null, ca: Array<string>, referredBy?: string | null, fests: Array<{ __typename?: 'Org', name: string, description: string }> } | null> | null } | null };
+export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'PaginatedUserType', count?: number | null, data?: Array<{ __typename?: 'User', email: string, id: string, uid: string, name?: string | null, photo?: string | null, gender?: GenderType | null, dob?: any | null, state?: string | null, city?: string | null, college?: string | null, stream?: string | null, selfID?: string | null, rollNumber?: string | null, festID: Array<string>, createdAt?: any | null, ca: Array<string>, referredBy?: string | null, fests: Array<{ __typename?: 'Org', name: string, description: string }> } | null> | null } | null };
 
 
 export const CreateEventDocument = gql`
@@ -824,6 +853,109 @@ export function useUpdateEventMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateEventMutationHookResult = ReturnType<typeof useUpdateEventMutation>;
 export type UpdateEventMutationResult = Apollo.MutationResult<UpdateEventMutation>;
 export type UpdateEventMutationOptions = Apollo.BaseMutationOptions<UpdateEventMutation, UpdateEventMutationVariables>;
+export const CreateLocationDocument = gql`
+    mutation createLocation($location: LocationCreateInputType!) {
+  createLocation(location: $location) {
+    id
+    name
+    description
+  }
+}
+    `;
+export type CreateLocationMutationFn = Apollo.MutationFunction<CreateLocationMutation, CreateLocationMutationVariables>;
+
+/**
+ * __useCreateLocationMutation__
+ *
+ * To run a mutation, you first call `useCreateLocationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateLocationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createLocationMutation, { data, loading, error }] = useCreateLocationMutation({
+ *   variables: {
+ *      location: // value for 'location'
+ *   },
+ * });
+ */
+export function useCreateLocationMutation(baseOptions?: Apollo.MutationHookOptions<CreateLocationMutation, CreateLocationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateLocationMutation, CreateLocationMutationVariables>(CreateLocationDocument, options);
+      }
+export type CreateLocationMutationHookResult = ReturnType<typeof useCreateLocationMutation>;
+export type CreateLocationMutationResult = Apollo.MutationResult<CreateLocationMutation>;
+export type CreateLocationMutationOptions = Apollo.BaseMutationOptions<CreateLocationMutation, CreateLocationMutationVariables>;
+export const DeleteLocationDocument = gql`
+    mutation deleteLocation($id: ID!) {
+  deleteLocation(id: $id) {
+    name
+  }
+}
+    `;
+export type DeleteLocationMutationFn = Apollo.MutationFunction<DeleteLocationMutation, DeleteLocationMutationVariables>;
+
+/**
+ * __useDeleteLocationMutation__
+ *
+ * To run a mutation, you first call `useDeleteLocationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteLocationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteLocationMutation, { data, loading, error }] = useDeleteLocationMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteLocationMutation(baseOptions?: Apollo.MutationHookOptions<DeleteLocationMutation, DeleteLocationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteLocationMutation, DeleteLocationMutationVariables>(DeleteLocationDocument, options);
+      }
+export type DeleteLocationMutationHookResult = ReturnType<typeof useDeleteLocationMutation>;
+export type DeleteLocationMutationResult = Apollo.MutationResult<DeleteLocationMutation>;
+export type DeleteLocationMutationOptions = Apollo.BaseMutationOptions<DeleteLocationMutation, DeleteLocationMutationVariables>;
+export const UpdateLocationDocument = gql`
+    mutation updateLocation($id: ID!, $location: LocationUpdateInputType!) {
+  updateLocation(id: $id, location: $location) {
+    name
+    description
+  }
+}
+    `;
+export type UpdateLocationMutationFn = Apollo.MutationFunction<UpdateLocationMutation, UpdateLocationMutationVariables>;
+
+/**
+ * __useUpdateLocationMutation__
+ *
+ * To run a mutation, you first call `useUpdateLocationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateLocationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateLocationMutation, { data, loading, error }] = useUpdateLocationMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      location: // value for 'location'
+ *   },
+ * });
+ */
+export function useUpdateLocationMutation(baseOptions?: Apollo.MutationHookOptions<UpdateLocationMutation, UpdateLocationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateLocationMutation, UpdateLocationMutationVariables>(UpdateLocationDocument, options);
+      }
+export type UpdateLocationMutationHookResult = ReturnType<typeof useUpdateLocationMutation>;
+export type UpdateLocationMutationResult = Apollo.MutationResult<UpdateLocationMutation>;
+export type UpdateLocationMutationOptions = Apollo.BaseMutationOptions<UpdateLocationMutation, UpdateLocationMutationVariables>;
 export const CreateOrgDocument = gql`
     mutation CreateOrg($org: OrgCreateInputType!) {
   createOrg(org: $org) {
@@ -919,7 +1051,10 @@ export const EventDocument = gql`
     priority
     type
     status
-    locationID
+    location {
+      id
+      name
+    }
     orgID
     eventRegistrationCount
   }
@@ -978,7 +1113,6 @@ export const EventRegistrationDocument = gql`
       city
       college
       stream
-      mobile
       selfID
       rollNumber
       ca
@@ -1018,6 +1152,45 @@ export function useEventRegistrationLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type EventRegistrationQueryHookResult = ReturnType<typeof useEventRegistrationQuery>;
 export type EventRegistrationLazyQueryHookResult = ReturnType<typeof useEventRegistrationLazyQuery>;
 export type EventRegistrationQueryResult = Apollo.QueryResult<EventRegistrationQuery, EventRegistrationQueryVariables>;
+export const LocationDocument = gql`
+    query location($id: ID) {
+  location(id: $id) {
+    id
+    name
+    description
+    lat
+    long
+  }
+}
+    `;
+
+/**
+ * __useLocationQuery__
+ *
+ * To run a query within a React component, call `useLocationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLocationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLocationQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useLocationQuery(baseOptions?: Apollo.QueryHookOptions<LocationQuery, LocationQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LocationQuery, LocationQueryVariables>(LocationDocument, options);
+      }
+export function useLocationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LocationQuery, LocationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LocationQuery, LocationQueryVariables>(LocationDocument, options);
+        }
+export type LocationQueryHookResult = ReturnType<typeof useLocationQuery>;
+export type LocationLazyQueryHookResult = ReturnType<typeof useLocationLazyQuery>;
+export type LocationQueryResult = Apollo.QueryResult<LocationQuery, LocationQueryVariables>;
 export const OrgDocument = gql`
     query Org($orgID: ID, $orgType: OrgType, $orgSubType: OrgSubType) {
   org(id: $orgID, orgType: $orgType, orgSubType: $orgSubType) {
@@ -1085,7 +1258,9 @@ export const TransactionDocument = gql`
       user {
         name
         email
-        mobile
+        college
+        gender
+        ca
       }
     }
     count
@@ -1152,7 +1327,6 @@ export const UserDocument = gql`
       city
       college
       stream
-      mobile
       selfID
       rollNumber
       festID

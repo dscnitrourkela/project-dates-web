@@ -9,11 +9,12 @@ import Modal from '@mui/material/Modal';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
-import { StatusType, useCreateEventMutation } from '../../graphql/graphql-types';
+import { StatusType, useCreateEventMutation, useLocationQuery } from '../../graphql/graphql-types';
 import { useAuthContext } from '../../store/contexts';
 import { useOrgContext } from 'store/contexts/org.context';
 import { EventStatus, EventTypes } from './constants';
 import { Delete } from '@mui/icons-material';
+import { useLocationContext } from 'store/contexts/location.context';
 
 const style = {
   position: 'absolute',
@@ -41,6 +42,8 @@ const ProductCreateModal: React.FC<IProductCreateModal> = ({
 }) => {
   const { user } = useAuthContext();
   const { org } = useOrgContext();
+  const { Locations } = useLocationContext();
+  const locations = Locations || [];
 
   const [values, setValues] = useState({
     name: '',
@@ -55,14 +58,15 @@ const ProductCreateModal: React.FC<IProductCreateModal> = ({
     type: '',
     priority: '0',
     status: 'DRAFT',
+    location: '',
   });
 
   const [createEvent, { error, loading }] = useCreateEventMutation();
 
-  const handleDateTime = (e) => {
+  const handleDateTime = (e, key) => {
     setValues((current) => ({
       ...current,
-      date: e.toISOString(),
+      [key]: e.toISOString(),
     }));
   };
 
@@ -120,7 +124,9 @@ const ProductCreateModal: React.FC<IProductCreateModal> = ({
             pocID: [],
             priority: parseInt(values.priority),
             weekly: false,
-            status: StatusType.Active,
+            status: values.status as StatusType,
+            locationID:
+              locations.find((location) => location.name === values.location).id || undefined,
           },
         },
       });
@@ -209,7 +215,7 @@ const ProductCreateModal: React.FC<IProductCreateModal> = ({
           <DateTimePicker
             label="Start Date"
             value={values.startDate}
-            onChange={handleDateTime}
+            onChange={(e) => handleDateTime(e, 'startDate')}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -224,7 +230,7 @@ const ProductCreateModal: React.FC<IProductCreateModal> = ({
           <DateTimePicker
             label="End Date"
             value={values.endDate}
-            onChange={handleDateTime}
+            onChange={(e) => handleDateTime(e, 'endDate')}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -327,6 +333,29 @@ const ProductCreateModal: React.FC<IProductCreateModal> = ({
               {Object.entries(EventTypes).map(([key, value]) => (
                 <MenuItem key={key} value={value}>
                   {key}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth sx={{ marginTop: '1rem' }} variant="outlined">
+            <InputLabel id="demo-simple-select-label" required>
+              Location of Event
+            </InputLabel>
+            <Select
+              fullWidth
+              label="Location of Event"
+              name="location"
+              onChange={handleChange}
+              sx={{
+                width: '100%',
+              }}
+              value={values.location}
+              required
+            >
+              {Object.entries(locations).map(([, value]) => (
+                <MenuItem key={value.name} value={value.name}>
+                  {value.name}
                 </MenuItem>
               ))}
             </Select>

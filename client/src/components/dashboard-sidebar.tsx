@@ -1,12 +1,6 @@
 import React, { useEffect } from 'react';
 
-import {
-  Box,
-  Divider,
-  Drawer,
-  Typography,
-  useMediaQuery
-} from '@mui/material';
+import { Box, Divider, Drawer, Typography, useMediaQuery } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 
 import { ChartBar as ChartBarIcon } from 'icons/chart-bar';
@@ -24,6 +18,7 @@ import { useRouter } from 'next/router';
 import { useAuthContext } from '../store/contexts';
 import { Logo } from './logo';
 import { NavItem } from './nav-item';
+import { LocationOnSharp } from '@mui/icons-material';
 
 const items = (permissions) => [
   {
@@ -61,11 +56,11 @@ const items = (permissions) => [
   //   icon: <UserAddIcon fontSize="small" />,
   //   title: 'Developer Info',
   // },
-  // {
-  //   href: '/locations',
-  //   icon: <XCircleIcon fontSize="small" />,
-  //   title: 'Locations',
-  // },
+  {
+    href: '/locations',
+    icon: <LocationOnSharp fontSize="small" />,
+    title: 'Locations',
+  },
   // {
   //   href: '/story',
   //   icon: <XCircleIcon fontSize="small" />,

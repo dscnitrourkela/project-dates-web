@@ -21,6 +21,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import {
   EventQuery,
   EventRegistrationQuery,
+  useLocationQuery,
   useUpdateEventMutation,
 } from '../../graphql/graphql-types';
 import { useAuthContext } from '../../store/contexts';
@@ -28,6 +29,7 @@ import UserSearch from './user-search';
 import { EventStatus, EventTypes } from './constants';
 import { Delete } from '@mui/icons-material';
 import { RegisteredUserList } from './user-list';
+import { useLocationContext } from 'store/contexts/location.context';
 
 const style = {
   position: 'absolute',
@@ -65,6 +67,9 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
 }) => {
   const [stage, setStage] = useState(STAGES.VIEW);
   const { user } = useAuthContext();
+  const { Locations } = useLocationContext();
+
+  const locations = Locations || [];
 
   const {
     name,
@@ -79,6 +84,7 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
     type,
     status,
     priority,
+    location,
   } = event;
   const [values, setValues] = useState({
     name,
@@ -95,6 +101,7 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
     type,
     priority: priority.toString(),
     status,
+    location: location.name,
   });
 
   const [updateEvent, { error, loading }] = useUpdateEventMutation();
@@ -157,6 +164,7 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
             priority: parseInt(values.priority),
             poster: values.poster,
             rules: values.rules,
+            locationID: locations.find((item) => item.name === values.location).id || undefined,
           },
         },
       });
@@ -383,6 +391,30 @@ const ProductEditModal: React.FC<IProductEditModal> = ({
                 {Object.entries(EventTypes).map(([key, value]) => (
                   <MenuItem key={key} value={value}>
                     {key}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <FormControl fullWidth sx={{ marginTop: '1rem' }} variant="outlined">
+              <InputLabel id="demo-simple-select-label" required>
+                Location of Event
+              </InputLabel>
+              <Select
+                disabled={stage === STAGES.VIEW}
+                fullWidth
+                label="Location of Event"
+                name="location"
+                onChange={handleChange}
+                sx={{
+                  width: '100%',
+                }}
+                value={values.location}
+                required
+              >
+                {Object.entries(locations).map(([, value]) => (
+                  <MenuItem key={value.name} value={value.name}>
+                    {value.name}
                   </MenuItem>
                 ))}
               </Select>
